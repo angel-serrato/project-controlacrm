@@ -1,24 +1,18 @@
-import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
-import ComingSoon from "./features/ComingSoon";
-
-const theme = createTheme({
-  palette: {
-    primary: { main: "#1976d2" },
-    background: { default: "#f9f9f9" },
-    text: { primary: "#333" },
-  },
-  typography: {
-    fontFamily: "Roboto, Arial, sans-serif",
-  },
-});
+import { Route, Routes } from "react-router"
+import Landing from "./pages/Landing"
+import Login from "./pages/Login"
+import Register from "./pages/Register"
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <ComingSoon />
-    </ThemeProvider>
-  );
+    <div>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+    </div>
+  )
 }
 
-export default App;
+export default App
