@@ -5,10 +5,11 @@ import { useState } from "react"
 function Register() {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const VITE_URL = process.env.VITE_API_URL
     const handleRegister = async (e) => {
         e.preventDefault()
         try {
-            const res = await fetch("http://localhost:3000/api/auth/register", {
+            const res = await fetch(`${VITE_URL}/api/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password })

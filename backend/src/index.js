@@ -5,15 +5,19 @@ import cors from "cors"
 import connectDB from "./config/db.js"
 import authRoutes from "./routes/authRoutes.js"
 
+const PORT = process.env.PORT || 5001
+const VITE_URL = process.env.VITE_API_URL
+
 dotenv.config()
 
 const app = express()
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+    origin: [`http://localhost:${PORT}`, `${VITE_URL}`]
+}))
 
 app.use("/api/auth", authRoutes)
 
-const PORT = process.env.PORT || 5001
 
 connectDB().then(() => {
     app.get('/', (req, res) => {
