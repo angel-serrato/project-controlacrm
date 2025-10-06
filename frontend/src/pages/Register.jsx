@@ -5,7 +5,7 @@ import { useState } from "react"
 function Register() {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
-    const VITE_URL = process.env.VITE_API_URL
+    const VITE_URL = import.meta.env.VITE_API_URL
     const handleRegister = async (e) => {
         e.preventDefault()
         try {
