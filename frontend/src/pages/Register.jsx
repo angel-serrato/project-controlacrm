@@ -17,7 +17,8 @@ function Register() {
             const data = await res.json()
             alert(data.message)
         } catch (error) {
-            alert("Error: ", error)
+            alert("Error al conectar al servidor")
+            console.log(error)
         }
 
     }
