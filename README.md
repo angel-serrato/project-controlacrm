@@ -17,8 +17,8 @@ MVP de un **CRM y Gestor de Inventarios** construido con el stack **MERN (MongoD
 
 ## Tecnologías
 
-- **Backend:** Node.js, Express, MongoDB, Mongoose
-- **Frontend:** React, Tailwind CSS, DaisyUI
+- **Server:** Node.js, Express, MongoDB, Mongoose
+- **Client:** React, Tailwind CSS, DaisyUI
 - **Autenticación:** JWT en cookies
 - **Testing:** Jest (backend)
 

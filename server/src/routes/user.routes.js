@@ -21,8 +21,8 @@ router.post('/login', loginUser);
 router.post('/logout', logoutUser);
 
 router.get('/profile', getUserProfile);
-router.patch('/profile', updateUserProfile);
-router.delete('/profile', deleteUserProfile);
+router.patch('/profile/:id', updateUserProfile);
+router.delete('/profile/:id', deleteUserProfile);
 
 router.get('/users', getAllUsers);
 router.get('/users/:id', getUserById);

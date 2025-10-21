@@ -9,9 +9,9 @@ const orderSchema = new Schema(
       ref: 'Customer',
       required: true,
     },
-    products: [
+    product: [
       {
-        products: {
+        product: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Product',
         },
