@@ -5,7 +5,7 @@ const { Schema, model } = mongoose;
 const roleSchema = new Schema(
   {
     name: {
-      String,
+      type: String,
       required: [true, 'Role name is required'],
       unique: true,
       lowercase: true,
