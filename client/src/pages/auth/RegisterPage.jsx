@@ -4,7 +4,13 @@ function RegisterPage() {
   return (
     <div>
       <NavBar />
-      <h4>Register page</h4>
+      <h1>Register</h1>
+      <form>
+        <input type="text" placeholder="Full name" />
+        <input type="email" placeholder="Email" />
+        <input type="password" placeholder="Password" />
+        <button type="submit">Create Account</button>
+      </form>
     </div>
   );
 }
