@@ -13,23 +13,24 @@ import {
   resetPassword,
   changePassword,
 } from '../controllers/user.controller.js';
+import { authenticate } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
-router.post('/logout', logoutUser);
+router.post('/logout', authenticate, logoutUser);
 
-router.get('/profile', getUserProfile);
-router.patch('/profile/:id', updateUserProfile);
-router.delete('/profile/:id', deleteUserProfile);
+router.get('/profile', authenticate, getUserProfile);
+router.patch('/profile/:id', authenticate, updateUserProfile);
+router.delete('/profile/:id', authenticate, deleteUserProfile);
 
-router.get('/users', getAllUsers);
-router.get('/users/:id', getUserById);
-router.delete('/users/:id', deleteUserByID);
+router.get('/users', authenticate, getAllUsers);
+router.get('/users/:id', authenticate, getUserById);
+router.delete('/users/:id', authenticate, deleteUserByID);
 
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
-router.patch('/change-password', changePassword);
+router.patch('/change-password', authenticate, changePassword);
 
 export default router;
