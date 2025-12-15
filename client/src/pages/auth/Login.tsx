@@ -1,9 +1,6 @@
-import NavBar from '../../components/NavBar';
-
 function LoginPage() {
   return (
     <div>
-      <NavBar />
       <h1>Login</h1>
       <form>
         <input type="email" placeholder="Email" />

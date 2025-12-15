@@ -1,9 +1,6 @@
-import NavBar from '../../components/NavBar.jsx';
-
 function ResetPasswordPage() {
   return (
     <div>
-      <NavBar />
       <h1>Reset Password</h1>
       <form>
         <input type="password" placeholder="New Password" />

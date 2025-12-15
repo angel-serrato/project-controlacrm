@@ -1,9 +1,6 @@
-import NavBar from '../../components/NavBar';
-
 function RegisterPage() {
   return (
     <div>
-      <NavBar />
       <h1>Register</h1>
       <form>
         <input type="text" placeholder="Full name" />
