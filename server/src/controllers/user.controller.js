@@ -1,5 +1,4 @@
 import User from '../models/user.model.js';
-import Role from '../models/role.model.js';
 import {
   hashPassword,
   verifyPassword,
@@ -8,7 +7,7 @@ import {
 
 export const registerUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, password, role } = req.body;
+    const { firstName, lastName, email, password } = req.body;
 
     if (!firstName || !lastName || !email || !password) {
       return res.status(400).json({ error: 'All fields are required' });
@@ -19,14 +18,6 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ error: 'Email is already registered' });
     }
 
-    let userRole = null;
-    if (role) {
-      userRole = await Role.findOne({ name: role.toLowerCase() });
-      if (!userRole) {
-        return res.status(400).json({ error: `Role ${role} does not exist` });
-      }
-    }
-
     const hashedPassword = await hashPassword(password);
 
     const user = await User.create({
@@ -34,7 +25,6 @@ export const registerUser = async (req, res) => {
       lastName,
       email,
       password: hashedPassword,
-      role: userRole ? userRole._id : undefined,
     });
 
     const token = generateToken(user._id);
@@ -53,7 +43,6 @@ export const registerUser = async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        role: user.role,
       },
     });
   } catch (err) {
@@ -101,7 +90,6 @@ export const loginUser = async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        role: user.role,
       },
     });
   } catch (err) {
@@ -125,7 +113,7 @@ export const logoutUser = async (req, res) => {
 
 export const getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).populate('role');
+    const user = await User.findById(req.user.id);
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -136,7 +124,6 @@ export const getUserProfile = async (req, res) => {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      role: user.role,
       isActive: user.isActive,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,

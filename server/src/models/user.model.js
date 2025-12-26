@@ -35,11 +35,6 @@ const userSchema = new Schema(
       minlength: [8, 'Password must have at least 8 characters'],
       select: false,
     },
-    role: {
-      type: mongoose.Schema.Types.ObjectId,
-      enum: ['admin', 'manager', 'employee', 'client'],
-      default: 'client',
-    },
     isActive: {
       type: Boolean,
       default: true,

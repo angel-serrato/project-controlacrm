@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate } from 'react-router';
-import './App.css';
 
 import LandingPage from './pages/LandingPage';
 import Login from './pages/auth/Login';
@@ -22,14 +21,14 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
-      
+
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/clients" element={<Clients />} />
       <Route path="/products" element={<Products />} />
       <Route path="/sales" element={<Sales />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/settings" element={<Settings />} />
-      
+
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
