@@ -1,13 +1,9 @@
+import RegisterForm from '@/components/auth/RegisterForm';
+
 function RegisterPage() {
   return (
-    <div>
-      <h1>Register</h1>
-      <form>
-        <input type="text" placeholder="Full name" />
-        <input type="email" placeholder="Email" />
-        <input type="password" placeholder="Password" />
-        <button type="submit">Create Account</button>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <RegisterForm />
     </div>
   );
 }
