@@ -1,36 +1,27 @@
 import express from 'express';
 import {
-  registerUser,
-  loginUser,
-  logoutUser,
-  getUserProfile,
-  updateUserProfile,
-  deleteUserProfile,
-  getAllUsers,
-  getUserById,
-  deleteUserByID,
-  forgotPassword,
-  resetPassword,
-  changePassword,
+  getProfile,
+  updateProfile,
+  deleteProfile,
+  getAll,
+  getById,
+  deleteById,
 } from '../controllers/user.controller.js';
 import { authenticate } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
-router.post('/register', registerUser);
-router.post('/login', loginUser);
-router.post('/logout', authenticate, logoutUser);
+// All user routes require authentication
+router.use(authenticate);
 
-router.get('/profile', authenticate, getUserProfile);
-router.patch('/profile/:id', authenticate, updateUserProfile);
-router.delete('/profile/:id', authenticate, deleteUserProfile);
+// Profile routes (current logged in user)
+router.get('/profile', getProfile);
+router.patch('/profile/:id', updateProfile);
+router.delete('/profile/:id', deleteProfile);
 
-router.get('/users', authenticate, getAllUsers);
-router.get('/users/:id', authenticate, getUserById);
-router.delete('/users/:id', authenticate, deleteUserByID);
-
-router.post('/forgot-password', forgotPassword);
-router.post('/reset-password', resetPassword);
-router.patch('/change-password', authenticate, changePassword);
+// User management routes (admin)
+router.get('/', getAll);
+router.get('/:id', getById);
+router.delete('/:id', deleteById);
 
 export default router;
