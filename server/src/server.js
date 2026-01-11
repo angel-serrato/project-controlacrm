@@ -5,7 +5,9 @@ import helmet from 'helmet';
 import connectDB from './config/db.config.js';
 import userRoutes from './routes/user.routes.js';
 import authRoutes from './routes/auth.routes.js';
-import errorHandler from './middlewares/errorHandler.middleware.js';
+import { errorHandler } from './middlewares/errorHandler.middleware.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './config/swagger.config.js';
 
 dotenv.config();
 
@@ -20,6 +22,7 @@ app.get('/', (req, res) => {
   res.send('Hello, from the API!');
 });
 
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/auth', authRoutes);
 app.use('/api', userRoutes);
 

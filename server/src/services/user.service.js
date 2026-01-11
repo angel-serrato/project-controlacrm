@@ -1,40 +1,78 @@
 import User from '../models/user.model.js';
+import argon2 from 'argon2';
 
 export const getUsers = async () => {
-  return await User.find();
+  const users = await User.find();
+  return users.map((u) => {
+    const obj = u.toObject();
+    delete obj.password;
+    return obj;
+  });
 };
 
 export const getUserById = async (id) => {
   const user = await User.findById(id);
   if (!user) {
-    throw new Error('User not found');
+    const err = new Error('User not found');
+    err.status = 404;
+    throw err;
   }
-  return user;
+  const obj = user.toObject();
+  delete obj.password;
+  return obj;
 };
 
 export const createUser = async (data) => {
-  const existingUser = await User.findOne({ name: data.name });
+  const existingUser = await User.findOne({ email: data.email });
   if (existingUser) {
-    throw new Error('User already registered');
+    const err = new Error('A user with this email already exists.');
+    err.status = 409;
+    throw err;
   }
-  return await User.create(data);
+  const hashedPassword = await argon2.hash(data.password);
+  const userData = {
+    email: data.email,
+    password: hashedPassword,
+    role: data.role || 'sales',
+    active: data.active !== undefined ? data.active : true,
+    createdBy: data.createdBy,
+  };
+  const user = await User.create(userData);
+  const obj = user.toObject();
+  delete obj.password;
+  return obj;
 };
 
 export const updateUser = async (id, data) => {
-  const updatedUser = await User.findByIdAndUpdate(id, data, {
+  const updateData = {};
+  if (data.email) updateData.email = data.email;
+  if (data.password) updateData.password = await argon2.hash(data.password);
+  if (data.role) updateData.role = data.role;
+  if (typeof data.active === 'boolean') updateData.active = data.active;
+  if (data.createdBy) updateData.createdBy = data.createdBy;
+
+  const updatedUser = await User.findByIdAndUpdate(id, updateData, {
     new: true,
     runValidators: true,
   });
   if (!updatedUser) {
-    throw new Error('User does not exist');
+    const err = new Error('User not found');
+    err.status = 404;
+    throw err;
   }
-  return updatedUser;
+  const obj = updatedUser.toObject();
+  delete obj.password;
+  return obj;
 };
 
 export const deleteUser = async (id) => {
   const deletedUser = await User.findByIdAndDelete(id);
   if (!deletedUser) {
-    throw new Error('User does not exist');
+    const err = new Error('User not found');
+    err.status = 404;
+    throw err;
   }
-  return deletedUser;
+  const obj = deletedUser.toObject();
+  delete obj.password;
+  return obj;
 };
