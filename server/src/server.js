@@ -1,34 +1,32 @@
 import express from 'express';
+import cors from 'cors';
 import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser';
-
-import { connectDB } from './config/db.config.js';
-import authRoutes from './routes/auth.routes.js';
+import helmet from 'helmet';
+import connectDB from './config/db.config.js';
 import userRoutes from './routes/user.routes.js';
-import customerRoutes from './routes/customer.routes.js';
-import productRoutes from './routes/product.routes.js';
-import orderRoutes from './routes/order.routes.js';
+import authRoutes from './routes/auth.routes.js';
+import errorHandler from './middlewares/errorHandler.middleware.js';
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
+app.use(helmet());
 app.use(express.json());
-app.use(cookieParser());
-
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/customers', customerRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/orders', orderRoutes);
-
-connectDB();
+app.use(cors());
 
 app.get('/', (req, res) => {
-  res.json({ status: 'Server running', version: '1.0' });
+  res.send('Hello, from the API!');
 });
 
-app.listen(PORT, () => {
-  console.log(`Server started at http://localhost:${PORT}/`);
+app.use('/api/auth', authRoutes);
+app.use('/api', userRoutes);
+
+app.use(errorHandler);
+
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
 });

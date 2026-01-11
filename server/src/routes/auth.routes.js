@@ -1,24 +1,11 @@
 import express from 'express';
-import {
-  register,
-  login,
-  logout,
-  changePassword,
-  forgotPassword,
-  resetPassword,
-} from '../controllers/auth.controller.js';
-import { authenticate } from '../middlewares/auth.middleware.js';
+import { registerUser, loginUser } from '../controllers/auth.controller.js';
+import { registerSchema, loginSchema } from '../validators/auth.validator.js';
+import validate from '../middlewares/validate.middleware.js';
 
 const router = express.Router();
 
-// Public routes
-router.post('/register', register);
-router.post('/login', login);
-router.post('/forgot-password', forgotPassword);
-router.post('/reset-password', resetPassword);
-
-// Protected routes
-router.post('/logout', authenticate, logout);
-router.patch('/change-password', authenticate, changePassword);
+router.post('/register', validate(registerSchema), registerUser);
+router.post('/login', validate(loginSchema), loginUser);
 
 export default router;

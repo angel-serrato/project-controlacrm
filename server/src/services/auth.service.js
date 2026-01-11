@@ -1,24 +1,23 @@
+import User from '../models/user.model.js';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 
-export const hashPassword = async (password) => {
-  const hashedPassword = await argon2.hash(password);
-  return hashedPassword;
+export const register = async ({ email, password, role }) => {
+  const hash = await argon2.hash(password);
+  const user = await User.create({ email, password: hash, role });
+  return user;
 };
 
-export const verifyPassword = async (hashedPassword, plainPassword) => {
-  const isValid = await argon2.verify(hashedPassword, plainPassword);
-  return isValid;
-};
+export const login = async ({ email, password }) => {
+  const user = await User.findOne({ email });
+  if (!user) throw new Error('Usuario no encontrado');
+  const valid = await argon2.verify(user.password, password);
+  if (!valid) throw new Error('Contraseña incorrecta');
 
-export const generateToken = (userId) => {
-  const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-    expiresIn: '7d',
-  });
-  return token;
-};
-
-export const verifyToken = (token) => {
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  return decoded;
+  const token = jwt.sign(
+    { id: user._id, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: '15m' }
+  );
+  return { user, token };
 };

@@ -1,28 +1,13 @@
-import { verifyToken } from '../services/auth.service.js';
-import User from '../models/user.model.js';
+import jwt from 'jsonwebtoken';
 
-export const authenticate = async (req, res, next) => {
-  try {
-    const token = req.cookies.token;
+export const verifyToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) return res.status(401).json({ message: 'No token' });
 
-    if (!token) {
-      return res.status(401).json({ error: 'No token provided' });
-    }
-
-    const decoded = verifyToken(token);
-    const user = await User.findById(decoded.id).select('-password');
-
-    if (!user) {
-      return res.status(401).json({ error: 'User not found' });
-    }
-
-    if (!user.isActive) {
-      return res.status(401).json({ error: 'User account is inactive' });
-    }
-
-    req.user = user;
+  const token = authHeader.split(' ')[1];
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) return res.status(401).json({ message: 'Token inválido' });
+    req.user = decoded;
     next();
-  } catch (error) {
-    return res.status(401).json({ error: 'Invalid or expired token' });
-  }
+  });
 };
