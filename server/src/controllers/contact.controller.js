@@ -19,6 +19,11 @@ export const getContacts = async (req, res, next) => {
   try {
     const { status } = req.query;
     const filters = status ? { status } : {};
+
+    // RN-08: Sales users only see their assigned contacts
+    if (req.user.role === 'sales') {
+      filters.assignedTo = req.user.id;
+    }
     const contacts = await contactService.getContacts(filters);
     res.json({ success: true, data: contacts });
   } catch (err) {
