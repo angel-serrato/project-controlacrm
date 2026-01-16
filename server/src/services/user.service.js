@@ -2,7 +2,7 @@ import User from '../models/user.model.js';
 import argon2 from 'argon2';
 
 export const getUsers = async () => {
-  const users = await User.find();
+  const users = await User.find({ active: true });
   return users.map((u) => {
     const obj = u.toObject();
     delete obj.password;
@@ -12,8 +12,8 @@ export const getUsers = async () => {
 
 export const getUserById = async (id) => {
   const user = await User.findById(id);
-  if (!user) {
-    const err = new Error('User not found');
+  if (!user || !user.active) {
+    const err = new Error('Usuario no encontrado');
     err.status = 404;
     throw err;
   }
@@ -25,7 +25,7 @@ export const getUserById = async (id) => {
 export const createUser = async (data) => {
   const existingUser = await User.findOne({ email: data.email });
   if (existingUser) {
-    const err = new Error('A user with this email already exists.');
+    const err = new Error('Ya existe un usuario con este email');
     err.status = 409;
     throw err;
   }
@@ -56,7 +56,7 @@ export const updateUser = async (id, data) => {
     runValidators: true,
   });
   if (!updatedUser) {
-    const err = new Error('User not found');
+    const err = new Error('Usuario no encontrado');
     err.status = 404;
     throw err;
   }
@@ -66,9 +66,13 @@ export const updateUser = async (id, data) => {
 };
 
 export const deleteUser = async (id) => {
-  const deletedUser = await User.findByIdAndDelete(id);
+  const deletedUser = await User.findByIdAndUpdate(
+    id,
+    { active: false },
+    { new: true }
+  );
   if (!deletedUser) {
-    const err = new Error('User not found');
+    const err = new Error('Usuario no encontrado');
     err.status = 404;
     throw err;
   }

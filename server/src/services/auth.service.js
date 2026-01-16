@@ -20,15 +20,15 @@ export const register = async ({ email, password, role }) => {
 
 export const login = async ({ email, password }) => {
   // Seleccionar password explícitamente
-  const user = await User.findOne({ email }).select('+password');
+  const user = await User.findOne({ email, active: true }).select('+password');
   if (!user) {
-    const err = new Error('Usuario no encontrado');
-    err.status = 404;
+    const err = new Error('Credenciales inválidas');
+    err.status = 401;
     throw err;
   }
   const valid = await argon2.verify(user.password, password);
   if (!valid) {
-    const err = new Error('Contraseña incorrecta');
+    const err = new Error('Credenciales inválidas');
     err.status = 401;
     throw err;
   }
@@ -36,7 +36,7 @@ export const login = async ({ email, password }) => {
   const token = jwt.sign(
     { id: user._id, role: user.role },
     process.env.JWT_SECRET,
-    { expiresIn: '15m' }
+    { expiresIn: '1h' }
   );
   // No devolver password
   const userObj = user.toObject();

@@ -7,8 +7,13 @@ import {
   deleteUser,
 } from '../controllers/user.controller.js';
 import { validateUser } from '../validators/user.validator.js';
+import { verifyToken } from '../middlewares/auth.middleware.js';
+import { isAdmin } from '../middlewares/role.middleware.js';
 
 const router = express.Router();
+
+// Aplicar autenticación a todas las rutas
+router.use(verifyToken);
 
 /**
  * @swagger
@@ -75,7 +80,7 @@ router.get('/users/:id', getUserById);
  *       400:
  *         description: Datos inválidos
  */
-router.post('/users', validateUser, createUser);
+router.post('/users', isAdmin, validateUser, createUser);
 
 /**
  * @swagger
@@ -108,7 +113,7 @@ router.post('/users', validateUser, createUser);
  *       404:
  *         description: Usuario no encontrado
  */
-router.put('/users/:id', validateUser, updateUser);
+router.put('/users/:id', isAdmin, validateUser, updateUser);
 
 /**
  * @swagger
@@ -129,6 +134,6 @@ router.put('/users/:id', validateUser, updateUser);
  *       404:
  *         description: Usuario no encontrado
  */
-router.delete('/users/:id', deleteUser);
+router.delete('/users/:id', isAdmin, deleteUser);
 
 export default router;
