@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import api from "../services/api";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -20,9 +20,8 @@ import { AlertCircle, ArrowLeft, CheckCircle2, Mail } from "lucide-react";
 // Schema de validación con Zod
 const forgotPasswordSchema = z.object({
   email: z
-    .string()
-    .email("Por favor ingresa un email válido")
-    .min(1, "Email es requerido"),
+    .string({ required_error: "Email es requerido" })
+    .email("Por favor ingresa un email válido"),
 });
 
 function ForgotPasswordPage() {

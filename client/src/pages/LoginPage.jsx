@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { useAuthStore } from "../store/authStore";
 import api from "../services/api";
 import { Button } from "../components/ui/button";
@@ -21,12 +21,10 @@ import { AlertCircle } from "lucide-react";
 // Schema de validación con Zod
 const loginSchema = z.object({
   email: z
-    .string()
-    .email("Por favor ingresa un email válido")
-    .min(1, "Email es requerido"),
+    .string({ required_error: "Email es requerido" })
+    .email("Por favor ingresa un email válido"),
   password: z
-    .string()
-    .min(1, "Contraseña es requerida")
+    .string({ required_error: "Contraseña es requerida" })
     .min(6, "La contraseña debe tener al menos 6 caracteres"),
 });
 
@@ -54,6 +52,12 @@ function LoginPage() {
         email: data.email,
         password: data.password,
       });
+
+      // Validar que la respuesta es exitosa y tiene los datos esperados
+      if (response.status >= 400 || !response.data?.data?.token) {
+        const errorMsg = response.data?.message || "Error al iniciar sesión";
+        throw new Error(errorMsg);
+      }
 
       const { token, user } = response.data.data;
       login(user, token);

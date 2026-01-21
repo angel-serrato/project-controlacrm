@@ -11,10 +11,10 @@ export default function ContactEditPage() {
         <h1 className="text-3xl font-bold tracking-tight">Editar Contacto</h1>
         <Button onClick={() => navigate("/contacts")}>Volver</Button>
       </div>
-      <p className="text-slate-500 dark:text-slate-400">
+      <p className="text-muted-foreground">
         Página de edición para el contacto: {id}
       </p>
-      <p className="text-slate-400">Próximamente...</p>
+      <p className="text-muted-foreground">Próximamente...</p>
     </div>
   );
 }

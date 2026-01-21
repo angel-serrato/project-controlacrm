@@ -1,11 +1,16 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
+import { useShallow } from "zustand/react/shallow";
 
 function ProtectedRoute() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const token = useAuthStore((state) => state.token);
-  const isSessionValid = useAuthStore((state) => state.isSessionValid);
-  const logout = useAuthStore((state) => state.logout);
+  const { isAuthenticated, token, isSessionValid, logout } = useAuthStore(
+    useShallow((state) => ({
+      isAuthenticated: state.isAuthenticated,
+      token: state.token,
+      isSessionValid: state.isSessionValid,
+      logout: state.logout,
+    })),
+  );
 
   // Si no hay token ni isAuthenticated, redirigir a login
   if (!isAuthenticated || !token) {

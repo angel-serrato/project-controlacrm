@@ -13,10 +13,10 @@ export default function ContactDetailPage() {
         </h1>
         <Button onClick={() => navigate("/contacts")}>Volver</Button>
       </div>
-      <p className="text-slate-500 dark:text-slate-400">
+      <p className="text-muted-foreground">
         Página de detalle para el contacto: {id}
       </p>
-      <p className="text-slate-400">Próximamente...</p>
+      <p className="text-muted-foreground">Próximamente...</p>
     </div>
   );
 }

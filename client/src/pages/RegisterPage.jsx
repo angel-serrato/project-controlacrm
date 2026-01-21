@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import api from "../services/api";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -28,14 +28,14 @@ import { AlertCircle, CheckCircle2 } from "lucide-react";
 const registerSchema = z
   .object({
     email: z
-      .string()
-      .email("Por favor ingresa un email válido")
-      .min(1, "Email es requerido"),
+      .string({ required_error: "Email es requerido" })
+      .email("Por favor ingresa un email válido"),
     password: z
-      .string()
-      .min(1, "Contraseña es requerida")
+      .string({ required_error: "Contraseña es requerida" })
       .min(6, "La contraseña debe tener al menos 6 caracteres"),
-    confirmPassword: z.string().min(1, "Debes confirmar la contraseña"),
+    confirmPassword: z
+      .string({ required_error: "Debes confirmar la contraseña" })
+      .min(6, "La contraseña debe tener al menos 6 caracteres"),
     role: z.enum(["admin", "sales"], { required_error: "Elige un rol" }),
   })
   .refine((data) => data.password === data.confirmPassword, {

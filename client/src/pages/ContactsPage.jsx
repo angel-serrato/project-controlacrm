@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "../components/ui/select";
 import { Eye, Edit2, Trash2, Plus, Loader2 } from "lucide-react";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 const STATUS_OPTIONS = {
   NEW: "Nuevo",
@@ -106,7 +106,7 @@ export default function ContactsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Contactos</h1>
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="text-muted-foreground">
             Total: {filteredContacts.length} contactos
           </p>
         </div>
@@ -146,7 +146,7 @@ export default function ContactsPage() {
       {filteredContacts.length === 0 ? (
         <Card>
           <CardContent className="pt-12 pb-12 text-center">
-            <p className="text-slate-500 dark:text-slate-400 mb-4">
+            <p className="text-muted-foreground mb-4">
               No hay contactos para mostrar
             </p>
             <Button onClick={() => navigate("/contacts/new")} variant="outline">
@@ -159,7 +159,7 @@ export default function ContactsPage() {
           {/* Desktop Table View */}
           <div className="hidden md:block border rounded-lg overflow-hidden">
             <table className="w-full">
-              <thead className="bg-slate-100 dark:bg-slate-800">
+              <thead className="bg-muted">
                 <tr>
                   <th className="px-6 py-3 text-left text-sm font-semibold">
                     Nombre
@@ -182,27 +182,17 @@ export default function ContactsPage() {
                 {filteredContacts.map((contact) => (
                   <tr
                     key={contact._id}
-                    className="hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+                    className="hover:bg-muted/50 transition-colors"
                   >
                     <td className="px-6 py-4 text-sm">
                       {contact.firstName} {contact.lastName}
                     </td>
-                    <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
+                    <td className="px-6 py-4 text-sm text-muted-foreground">
                       {contact.email}
                     </td>
                     <td className="px-6 py-4 text-sm">{contact.phone}</td>
                     <td className="px-6 py-4 text-sm">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          contact.status === "NEW"
-                            ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100"
-                            : contact.status === "IN_PROGRESS"
-                              ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100"
-                              : contact.status === "CONTACTED"
-                                ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100"
-                                : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
-                        }`}
-                      >
+                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-muted text-foreground">
                         {STATUS_OPTIONS[contact.status] || contact.status}
                       </span>
                     </td>
@@ -232,7 +222,7 @@ export default function ContactsPage() {
                           onClick={() => handleDelete(contact._id)}
                           title="Eliminar"
                           className={
-                            deleteId === contact.id ? "text-red-600" : ""
+                            deleteId === contact._id ? "text-destructive" : ""
                           }
                         >
                           <Trash2 className="w-4 h-4" />
@@ -258,25 +248,15 @@ export default function ContactsPage() {
                       <h3 className="font-semibold">
                         {contact.firstName} {contact.lastName}
                       </h3>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                      <p className="text-sm text-muted-foreground">
                         {contact.email}
                       </p>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                      <p className="text-sm text-muted-foreground">
                         {contact.phone}
                       </p>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          contact.status === "NEW"
-                            ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100"
-                            : contact.status === "IN_PROGRESS"
-                              ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100"
-                              : contact.status === "CONTACTED"
-                                ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100"
-                                : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
-                        }`}
-                      >
+                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-muted text-foreground">
                         {STATUS_OPTIONS[contact.status] || contact.status}
                       </span>
                       <div className="flex gap-2">
@@ -301,7 +281,7 @@ export default function ContactsPage() {
                           variant="ghost"
                           onClick={() => handleDelete(contact._id)}
                           className={
-                            deleteId === contact.id ? "text-red-600" : ""
+                            deleteId === contact._id ? "text-destructive" : ""
                           }
                         >
                           <Trash2 className="w-4 h-4" />

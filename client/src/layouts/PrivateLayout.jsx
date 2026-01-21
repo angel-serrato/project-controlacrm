@@ -1,9 +1,10 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 
 function PrivateLayout() {
   const navigate = useNavigate();
-  const { user, logout } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
 
   const handleLogout = () => {
     logout();
@@ -21,20 +22,20 @@ function PrivateLayout() {
         <nav className="mt-8">
           <ul className="space-y-2 px-4">
             <li>
-              <a
-                href="/dashboard"
+              <Link
+                to="/dashboard"
                 className="block px-4 py-2 rounded-md text-gray-600 hover:bg-gray-100"
               >
                 Dashboard
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="/contacts"
+              <Link
+                to="/contacts"
                 className="block px-4 py-2 rounded-md text-gray-600 hover:bg-gray-100"
               >
                 Contacts
-              </a>
+              </Link>
             </li>
           </ul>
         </nav>
