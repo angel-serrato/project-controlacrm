@@ -1,74 +1,117 @@
-import { Outlet, useNavigate, Link } from "react-router-dom";
+import { Outlet, useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
+import { Button } from "../components/ui/button";
+import { LayoutDashboard, Users, LogOut, Menu } from "lucide-react";
+import { useState } from "react";
 
 function PrivateLayout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
 
+  const isActive = (path) => location.pathname === path;
+
+  const navItems = [
+    {
+      label: "Dashboard",
+      path: "/dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      label: "Contactos",
+      path: "/contacts",
+      icon: Users,
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="flex h-screen bg-background">
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md">
-        <div className="p-6">
-          <h2 className="text-2xl font-bold text-gray-900">ControlaCRM</h2>
+      <aside
+        className={`${
+          sidebarOpen ? "w-64" : "w-20"
+        } border-r border-border bg-background transition-all duration-300 flex flex-col`}
+      >
+        {/* Logo Section */}
+        <div className="flex items-center justify-between p-6 border-b border-border">
+          {sidebarOpen && (
+            <h2 className="text-xl font-bold tracking-tight">ControlaCRM</h2>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="h-8 w-8"
+          >
+            <Menu className="h-4 w-4" />
+          </Button>
         </div>
 
-        <nav className="mt-8">
-          <ul className="space-y-2 px-4">
-            <li>
+        {/* Navigation */}
+        <nav className="flex-1 px-3 py-6 space-y-2">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const active = isActive(item.path);
+            return (
               <Link
-                to="/dashboard"
-                className="block px-4 py-2 rounded-md text-gray-600 hover:bg-gray-100"
+                key={item.path}
+                to={item.path}
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                  active
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                }`}
               >
-                Dashboard
+                <Icon className="h-5 w-5 flex-shrink-0" />
+                {sidebarOpen && <span>{item.label}</span>}
               </Link>
-            </li>
-            <li>
-              <Link
-                to="/contacts"
-                className="block px-4 py-2 rounded-md text-gray-600 hover:bg-gray-100"
-              >
-                Contacts
-              </Link>
-            </li>
-          </ul>
+            );
+          })}
         </nav>
 
-        {/* User info and logout */}
-        <div className="absolute bottom-0 left-0 w-64 border-t border-gray-200 p-4">
-          <div className="mb-4">
-            <p className="text-sm text-gray-600">Logged as:</p>
-            <p className="font-semibold text-gray-900">
-              {user?.email || "User"}
-            </p>
-          </div>
-          <button
+        {/* User Section */}
+        <div className="border-t border-border p-4 space-y-4">
+          {sidebarOpen && (
+            <div className="space-y-1">
+              <p className="text-xs font-medium text-muted-foreground">
+                Cuenta
+              </p>
+              <p className="text-sm font-medium truncate">{user?.email}</p>
+            </div>
+          )}
+          <Button
             onClick={handleLogout}
-            className="w-full px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+            variant="outline"
+            className="w-full justify-start gap-2"
+            size={sidebarOpen ? "default" : "icon"}
           >
-            Logout
-          </button>
+            <LogOut className="h-4 w-4" />
+            {sidebarOpen && <span>Salir</span>}
+          </Button>
         </div>
       </aside>
 
-      {/* Main content */}
+      {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        {/* Top navbar */}
-        <header className="bg-white shadow">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <h1 className="text-xl font-semibold text-gray-900">Welcome</h1>
+        {/* Header */}
+        <header className="border-b border-border bg-background">
+          <div className="max-w-7xl mx-auto px-6 py-4">
+            <p className="text-sm text-muted-foreground">
+              Bienvenido de vuelta
+            </p>
           </div>
         </header>
 
-        {/* Page content */}
+        {/* Page Content */}
         <main className="flex-1 overflow-auto">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="max-w-7xl mx-auto px-6 py-8">
             <Outlet />
           </div>
         </main>

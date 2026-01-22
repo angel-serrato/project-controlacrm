@@ -11,17 +11,9 @@ import { Label } from "../components/ui/label";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
 import { AlertCircle, Loader2 } from "lucide-react";
 
 // Schema de validación con Zod
