@@ -46,6 +46,7 @@ router.get('/users', getUsers);
  *           type: string
  *         required: true
  *         description: ID del usuario
+ *         example: "64a1b2c3d4e5f6a7b8c9d0e1"
  *     responses:
  *       200:
  *         description: Usuario encontrado
@@ -95,6 +96,7 @@ router.post('/users', isAdmin, validateUser, createUser);
  *           type: string
  *         required: true
  *         description: ID del usuario
+ *         example: "64a1b2c3d4e5f6a7b8c9d0e1"
  *     requestBody:
  *       required: true
  *       content:
@@ -128,6 +130,7 @@ router.put('/users/:id', isAdmin, validateUser, updateUser);
  *           type: string
  *         required: true
  *         description: ID del usuario
+ *         example: "64a1b2c3d4e5f6a7b8c9d0e1"
  *     responses:
  *       200:
  *         description: Usuario eliminado exitosamente
