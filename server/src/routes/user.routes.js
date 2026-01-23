@@ -31,7 +31,7 @@ router.use(verifyToken);
  *               items:
  *                 $ref: '#/components/schemas/User'
  */
-router.get('/users', getUsers);
+router.get('/', getUsers);
 
 /**
  * @swagger
@@ -57,7 +57,7 @@ router.get('/users', getUsers);
  *       404:
  *         description: Usuario no encontrado
  */
-router.get('/users/:id', getUserById);
+router.get('/:id', getUserById);
 
 /**
  * @swagger
@@ -81,7 +81,7 @@ router.get('/users/:id', getUserById);
  *       400:
  *         description: Datos inválidos
  */
-router.post('/users', isAdmin, validateUser, createUser);
+router.post('/', isAdmin, validateUser, createUser);
 
 /**
  * @swagger
@@ -115,7 +115,7 @@ router.post('/users', isAdmin, validateUser, createUser);
  *       404:
  *         description: Usuario no encontrado
  */
-router.put('/users/:id', isAdmin, validateUser, updateUser);
+router.put('/:id', isAdmin, validateUser, updateUser);
 
 /**
  * @swagger
@@ -137,6 +137,6 @@ router.put('/users/:id', isAdmin, validateUser, updateUser);
  *       404:
  *         description: Usuario no encontrado
  */
-router.delete('/users/:id', isAdmin, deleteUser);
+router.delete('/:id', isAdmin, deleteUser);
 
 export default router;

@@ -8,7 +8,10 @@ import {
   updateContactStatus,
 } from '../controllers/contact.controller.js';
 import { validate } from '../middlewares/validate.middleware.js';
-import { contactSchema } from '../validators/contact.validator.js';
+import {
+  contactSchema,
+  statusSchema,
+} from '../validators/contact.validator.js';
 import { verifyToken } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
@@ -22,6 +25,8 @@ router.use(verifyToken);
  *   get:
  *     summary: Obtiene todos los contactos
  *     tags: [Contacts]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: status
@@ -39,6 +44,8 @@ router.use(verifyToken);
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Contact'
+ *       401:
+ *         description: No autorizado (token ausente o inválido)
  */
 router.get('/', getContacts);
 
@@ -48,6 +55,8 @@ router.get('/', getContacts);
  *   get:
  *     summary: Obtiene un contacto por ID
  *     tags: [Contacts]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -63,6 +72,8 @@ router.get('/', getContacts);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Contact'
+ *       401:
+ *         description: No autorizado
  *       404:
  *         description: Contacto no encontrado
  */
@@ -74,6 +85,8 @@ router.get('/:id', getContactById);
  *   post:
  *     summary: Crea un nuevo contacto
  *     tags: [Contacts]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -89,6 +102,8 @@ router.get('/:id', getContactById);
  *               $ref: '#/components/schemas/Contact'
  *       400:
  *         description: Datos inválidos
+ *       401:
+ *         description: No autorizado
  */
 router.post('/', validate(contactSchema), createContact);
 
@@ -98,6 +113,8 @@ router.post('/', validate(contactSchema), createContact);
  *   put:
  *     summary: Actualiza un contacto existente
  *     tags: [Contacts]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -121,6 +138,8 @@ router.post('/', validate(contactSchema), createContact);
  *               $ref: '#/components/schemas/Contact'
  *       400:
  *         description: Datos inválidos
+ *       401:
+ *         description: No autorizado
  *       404:
  *         description: Contacto no encontrado
  */
@@ -132,6 +151,8 @@ router.put('/:id', validate(contactSchema), updateContact);
  *   patch:
  *     summary: Actualiza solo el estado de un contacto
  *     tags: [Contacts]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -159,10 +180,12 @@ router.put('/:id', validate(contactSchema), updateContact);
  *               $ref: '#/components/schemas/Contact'
  *       400:
  *         description: Datos inválidos
+ *       401:
+ *         description: No autorizado
  *       404:
  *         description: Contacto no encontrado
  */
-router.patch('/:id/status', updateContactStatus);
+router.patch('/:id/status', validate(statusSchema), updateContactStatus);
 
 /**
  * @swagger
@@ -170,6 +193,8 @@ router.patch('/:id/status', updateContactStatus);
  *   delete:
  *     summary: Elimina un contacto
  *     tags: [Contacts]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

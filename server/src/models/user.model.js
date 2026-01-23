@@ -32,4 +32,9 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Índices explícitos para optimización
+userSchema.index({ email: 1 }, { unique: true, sparse: true });
+userSchema.index({ active: 1 });
+userSchema.index({ role: 1 });
+
 export default mongoose.model('User', userSchema);

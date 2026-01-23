@@ -46,4 +46,10 @@ const contactSchema = new mongoose.Schema(
   }
 );
 
+// Índices explícitos para optimización
+contactSchema.index({ active: 1 });
+contactSchema.index({ assignedTo: 1, active: 1 });
+contactSchema.index({ status: 1, active: 1 });
+contactSchema.index({ email: 1 });
+
 export default mongoose.model('Contact', contactSchema);
