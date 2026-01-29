@@ -11,7 +11,6 @@ import { Label } from '../components/ui/label';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '../components/ui/card';
@@ -24,7 +23,6 @@ import {
 } from '../components/ui/select';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
-// Schema de validación con Zod
 const registerSchema = z
   .object({
     email: z.email({ message: 'Por favor ingresa un email válido' }),
@@ -88,10 +86,13 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="border-b border-border sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
+      <header className="border-b border-border sticky top-0 z-50 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+        <nav
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between"
+          aria-label="Navegación principal"
+        >
+          <Link to="/" className="flex items-center gap-2 min-w-0">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
               <span className="text-primary-foreground font-bold text-xs sm:text-sm">
                 CRM
               </span>
@@ -99,125 +100,110 @@ export default function RegisterPage() {
             <span className="font-semibold text-sm sm:text-base truncate">
               ControlaCRM
             </span>
-          </div>
+          </Link>
 
-          <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
-            <Link to="/">
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-xs sm:text-sm h-8 sm:h-9"
-              >
-                Inicio
-              </Button>
-            </Link>
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <Link to="/login">
-              <Button size="sm" className="text-xs sm:text-sm h-8 sm:h-9">
+              <Button variant="outline" size="sm">
                 Iniciar Sesión
               </Button>
+            </Link>
+            <Link to="/register">
+              <Button size="sm">Registrarse</Button>
             </Link>
           </div>
         </nav>
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <Card className="w-full max-w-md border border-border">
-          <CardHeader className="space-y-1 text-center p-4 sm:p-6">
-            <CardTitle className="text-xl sm:text-2xl">Crear Cuenta</CardTitle>
-            <CardDescription className="text-xs sm:text-sm">
+      <main className="flex-1 flex items-center justify-center px-4 py-12">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-1 text-center p-6">
+            <CardTitle className="text-2xl">Crear Cuenta</CardTitle>
+            <p className="text-sm text-muted-foreground">
               Regístrate para comenzar a gestionar contactos
-            </CardDescription>
+            </p>
           </CardHeader>
 
-          <CardContent className="p-4 sm:p-6 space-y-4 sm:space-y-6">
-            {/* Error Alert */}
+          <CardContent className="p-6 space-y-4">
             {serverError && (
-              <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg border border-destructive/50 bg-destructive/10">
-                <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-destructive flex-shrink-0 mt-0.5" />
-                <p className="text-xs sm:text-sm text-destructive">
-                  {serverError}
-                </p>
+              <div
+                className="flex items-start gap-3 p-4 rounded-lg border border-destructive/50 bg-destructive/10"
+                role="alert"
+              >
+                <AlertCircle
+                  className="w-5 h-5 text-destructive shrink-0 mt-0.5"
+                  aria-hidden="true"
+                />
+                <p className="text-sm text-destructive">{serverError}</p>
               </div>
             )}
 
-            {/* Form */}
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="space-y-3 sm:space-y-4"
-            >
-              {/* Email Field */}
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-xs sm:text-sm">
-                  Email
-                </Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="tu@email.com"
-                  className="text-xs sm:text-sm h-9 sm:h-10"
+                  aria-required="true"
+                  aria-describedby={errors.email ? 'email-error' : undefined}
                   {...register('email')}
                 />
                 {errors.email && (
-                  <p className="text-xs sm:text-sm text-destructive">
+                  <p className="text-sm text-destructive" id="email-error">
                     {errors.email.message}
                   </p>
                 )}
               </div>
 
-              {/* Password Field */}
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-xs sm:text-sm">
-                  Contraseña
-                </Label>
+                <Label htmlFor="password">Contraseña</Label>
                 <Input
                   id="password"
                   type="password"
                   placeholder="••••••••"
-                  className="text-xs sm:text-sm h-9 sm:h-10"
+                  aria-required="true"
+                  aria-describedby={
+                    errors.password ? 'password-error' : undefined
+                  }
                   {...register('password')}
                 />
                 {errors.password && (
-                  <p className="text-xs sm:text-sm text-destructive">
+                  <p className="text-sm text-destructive" id="password-error">
                     {errors.password.message}
                   </p>
                 )}
               </div>
 
-              {/* Confirm Password Field */}
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="text-xs sm:text-sm">
-                  Confirmar Contraseña
-                </Label>
+                <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
                 <Input
                   id="confirmPassword"
                   type="password"
                   placeholder="••••••••"
-                  className="text-xs sm:text-sm h-9 sm:h-10"
+                  aria-required="true"
+                  aria-describedby={
+                    errors.confirmPassword ? 'confirm-error' : undefined
+                  }
                   {...register('confirmPassword')}
                 />
                 {errors.confirmPassword && (
-                  <p className="text-xs sm:text-sm text-destructive">
+                  <p className="text-sm text-destructive" id="confirm-error">
                     {errors.confirmPassword.message}
                   </p>
                 )}
               </div>
 
-              {/* Role Field */}
-              <div className="space-y-1.5 sm:space-y-2">
-                <Label htmlFor="role" className="text-xs sm:text-sm">
-                  Rol
-                </Label>
+              <div className="space-y-2">
+                <Label htmlFor="role">Rol</Label>
                 <Select
                   value={watch('role')}
                   onValueChange={(value) =>
                     setValue('role', value, { shouldValidate: true })
                   }
                 >
-                  <SelectTrigger
-                    id="role"
-                    className="text-xs sm:text-sm h-9 sm:h-10"
-                  >
+                  <SelectTrigger id="role" aria-required="true">
                     <SelectValue placeholder="Selecciona un rol" />
                   </SelectTrigger>
                   <SelectContent>
@@ -226,23 +212,22 @@ export default function RegisterPage() {
                   </SelectContent>
                 </Select>
                 {errors.role && (
-                  <p className="text-xs sm:text-sm text-destructive">
+                  <p className="text-sm text-destructive">
                     {errors.role.message}
                   </p>
                 )}
               </div>
 
-              {/* Submit Button */}
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full text-sm h-9 sm:h-10"
+                className="w-full"
+                aria-busy={isLoading}
               >
                 {isLoading ? 'Registrando...' : 'Crear Cuenta'}
               </Button>
             </form>
 
-            {/* Divider */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-border"></div>
@@ -254,9 +239,8 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Login Link */}
-            <div className="text-center space-y-2 sm:space-y-4">
-              <p className="text-xs sm:text-sm text-muted-foreground">
+            <div className="text-center space-y-4">
+              <p className="text-sm text-muted-foreground">
                 ¿Ya tienes cuenta?{' '}
                 <Link
                   to="/login"
@@ -266,18 +250,25 @@ export default function RegisterPage() {
                 </Link>
               </p>
 
-              {/* Password Requirements Box */}
-              <div className="p-2 sm:p-3 rounded-lg bg-muted border border-border text-xs space-y-2">
-                <p className="font-medium text-foreground">
-                  Requisitos de contraseña:
-                </p>
+              <div
+                className="p-4 rounded-lg bg-muted border border-border text-xs space-y-2"
+                role="region"
+                aria-label="Requisitos de contraseña"
+              >
+                <p className="font-medium">Requisitos de contraseña:</p>
                 <div className="space-y-1 text-muted-foreground">
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3 h-3 text-primary flex-shrink-0" />
+                    <CheckCircle2
+                      className="w-3 h-3 text-primary shrink-0"
+                      aria-hidden="true"
+                    />
                     <span>Mínimo 6 caracteres</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3 h-3 text-primary flex-shrink-0" />
+                    <CheckCircle2
+                      className="w-3 h-3 text-primary shrink-0"
+                      aria-hidden="true"
+                    />
                     <span>Las contraseñas deben coincidir</span>
                   </div>
                 </div>
@@ -288,30 +279,28 @@ export default function RegisterPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border py-8 sm:py-12 px-4 sm:px-6 lg:px-8 bg-muted/50">
+      <footer className="border-t border-border py-12 px-4 bg-muted/50">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
             {/* Brand */}
-            <div className="space-y-2 sm:space-y-4">
+            <div className="col-span-2 lg:col-span-1 space-y-4">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
-                  <span className="text-primary-foreground font-bold text-xs sm:text-sm">
+                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
+                  <span className="text-primary-foreground font-bold text-sm">
                     CRM
                   </span>
                 </div>
-                <span className="font-semibold text-xs sm:text-sm truncate">
-                  ControlaCRM
-                </span>
+                <span className="font-semibold text-sm">ControlaCRM</span>
               </div>
-              <p className="text-xs sm:text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 La solución CRM más simple y poderosa para tu equipo de ventas
               </p>
             </div>
 
-            {/* Links */}
-            <div className="space-y-2 sm:space-y-3">
-              <h3 className="font-semibold text-xs sm:text-sm">Producto</h3>
-              <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
+            {/* Producto */}
+            <nav className="space-y-3">
+              <h3 className="font-semibold text-sm">Producto</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
                   <a
                     href="#"
@@ -337,12 +326,12 @@ export default function RegisterPage() {
                   </a>
                 </li>
               </ul>
-            </div>
+            </nav>
 
-            {/* Company */}
-            <div className="space-y-2 sm:space-y-3">
-              <h3 className="font-semibold text-xs sm:text-sm">Empresa</h3>
-              <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
+            {/* Empresa */}
+            <nav className="space-y-3">
+              <h3 className="font-semibold text-sm">Empresa</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
                   <a
                     href="#"
@@ -368,12 +357,12 @@ export default function RegisterPage() {
                   </a>
                 </li>
               </ul>
-            </div>
+            </nav>
 
             {/* Legal */}
-            <div className="space-y-2 sm:space-y-3">
-              <h3 className="font-semibold text-xs sm:text-sm">Legal</h3>
-              <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
+            <nav className="space-y-3">
+              <h3 className="font-semibold text-sm">Legal</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
                   <a
                     href="#"
@@ -399,14 +388,13 @@ export default function RegisterPage() {
                   </a>
                 </li>
               </ul>
-            </div>
+            </nav>
           </div>
 
-          {/* Divider */}
-          <div className="border-t border-border pt-6 sm:pt-8">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
+          <div className="border-t border-border pt-8">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
               <p>&copy; 2026 ControlaCRM. Todos los derechos reservados.</p>
-              <div className="flex gap-3 sm:gap-6">
+              <div className="flex gap-6">
                 <a href="#" className="hover:text-foreground transition-colors">
                   Twitter
                 </a>

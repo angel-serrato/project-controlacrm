@@ -74,18 +74,16 @@ export const useAuthStore = create<AuthStore>()(
       // Restaurar estado desde localStorage al iniciar la app
       initAuth: () => {
         try {
-          const { user, token, isAuthenticated, loginTime } = get();
+          const { user, token, isSessionValid } = get();
 
-          // Si no hay token o loginTime, no hay sesión
-          if (!token || !loginTime) {
+          // Si no hay token, no hay sesión
+          if (!token) {
             set({ isAuthenticated: false });
             return;
           }
 
-          // Verificar si la sesión ha expirado
-          const elapsed = Date.now() - loginTime;
-          if (elapsed >= SESSION_DURATION) {
-            // Sesión expirada, hacer logout
+          // Verificar si la sesión ha expirado usando el método existente
+          if (!isSessionValid()) {
             set({
               user: null,
               token: null,

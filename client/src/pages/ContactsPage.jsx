@@ -3,12 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import api from '../services/api';
 import { Button } from '../components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '../components/ui/card';
+import { Card } from '../components/ui/card';
 import {
   Select,
   SelectContent,
@@ -16,23 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
-import { Eye, Edit2, Trash2, Plus, Loader2, Search } from 'lucide-react';
 import { Input } from '../components/ui/input';
+import { Eye, Edit2, Trash2, Plus, Loader2, Search } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-
-const STATUS_OPTIONS = {
-  NEW: 'Nuevo',
-  IN_PROGRESS: 'En Progreso',
-  CONTACTED: 'Contactado',
-  COMPLETED: 'Completado',
-};
-
-const STATUS_COLORS = {
-  NEW: 'text-blue-600',
-  IN_PROGRESS: 'text-yellow-600',
-  CONTACTED: 'text-purple-600',
-  COMPLETED: 'text-green-600',
-};
 
 export default function ContactsPage() {
   const navigate = useNavigate();
@@ -64,16 +45,14 @@ export default function ContactsPage() {
     fetchContacts();
   }, []);
 
-  // Filtrar contactos por estado, búsqueda y rol
+  // Filtrar contactos
   useEffect(() => {
     let filtered = contacts;
 
-    // Filtrar por estado
     if (statusFilter !== 'ALL') {
       filtered = filtered.filter((c) => c.status === statusFilter);
     }
 
-    // Filtrar por búsqueda (nombre o email)
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -83,7 +62,6 @@ export default function ContactsPage() {
       );
     }
 
-    // Filtrar por rol: usuarios sales solo ven sus contactos
     if (user?.role === 'sales') {
       filtered = filtered.filter((c) => c.assignedTo?._id === user?.id);
     }
@@ -91,9 +69,28 @@ export default function ContactsPage() {
     setFilteredContacts(filtered);
   }, [contacts, statusFilter, searchQuery, user]);
 
+  const getStatusLabel = (status) => {
+    const labels = {
+      NEW: 'Nuevo',
+      IN_PROGRESS: 'En Progreso',
+      CONTACTED: 'Contactado',
+      COMPLETED: 'Completado',
+    };
+    return labels[status] || status;
+  };
+
+  const getStatusColor = (status) => {
+    const colors = {
+      NEW: 'text-blue-600 dark:text-blue-400',
+      IN_PROGRESS: 'text-yellow-600 dark:text-yellow-400',
+      CONTACTED: 'text-purple-600 dark:text-purple-400',
+      COMPLETED: 'text-green-600 dark:text-green-400',
+    };
+    return colors[status] || 'text-gray-600';
+  };
+
   const handleDelete = async (id) => {
     if (deleteId === id) {
-      // Segunda confirmación para eliminar
       try {
         await api.delete(`/contacts/${id}`);
         setContacts(contacts.filter((c) => c._id !== id));
@@ -106,44 +103,43 @@ export default function ContactsPage() {
         );
       }
     } else {
-      // Primera confirmación
       setDeleteId(id);
     }
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <div className="flex items-center justify-center min-h-screen bg-background">
         <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Contactos</h1>
-          <p className="text-muted-foreground">
-            {filteredContacts.length} de {contacts.length} contactos
-          </p>
+    <div className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl space-y-6">
+        {/* Header */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
+              Contactos
+            </h1>
+            <p className="text-sm sm:text-base text-muted-foreground mt-1">
+              {filteredContacts.length} de {contacts.length} contactos
+            </p>
+          </div>
+          <Button
+            onClick={() => navigate('/contacts/new')}
+            className="gap-2 w-full sm:w-auto"
+          >
+            <Plus className="h-4 w-4" />
+            Nuevo Contacto
+          </Button>
         </div>
-        <Button
-          onClick={() => navigate('/contacts/new')}
-          className="gap-2 w-full sm:w-auto"
-        >
-          <Plus className="h-4 w-4" />
-          Nuevo Contacto
-        </Button>
-      </div>
 
-      {/* Filtros */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Filtros</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        {/* Filtros */}
+        <Card className="p-6">
+          <h3 className="text-base font-semibold mb-4">Filtros</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Búsqueda */}
             <div className="space-y-2">
@@ -168,22 +164,19 @@ export default function ContactsPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ALL">Todos los estados</SelectItem>
-                  {Object.entries(STATUS_OPTIONS).map(([key, label]) => (
-                    <SelectItem key={key} value={key}>
-                      {label}
-                    </SelectItem>
-                  ))}
+                  <SelectItem value="NEW">Nuevo</SelectItem>
+                  <SelectItem value="IN_PROGRESS">En Progreso</SelectItem>
+                  <SelectItem value="CONTACTED">Contactado</SelectItem>
+                  <SelectItem value="COMPLETED">Completado</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </Card>
 
-      {/* Listado de contactos */}
-      {filteredContacts.length === 0 ? (
-        <Card>
-          <CardContent className="pt-12 pb-12 text-center">
+        {/* Listado de contactos */}
+        {filteredContacts.length === 0 ? (
+          <Card className="p-12 text-center">
             <p className="text-muted-foreground mb-6">
               {contacts.length === 0
                 ? 'No hay contactos registrados aún'
@@ -202,105 +195,103 @@ export default function ContactsPage() {
                 Limpiar búsqueda
               </Button>
             )}
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="space-y-4">
-          {/* Vista Desktop - Tabla */}
-          <div className="hidden md:block border rounded-lg overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-muted border-b">
-                <tr>
-                  <th className="px-6 py-3 text-left text-sm font-semibold">
-                    Nombre
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold">
-                    Teléfono
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold">
-                    Estado
-                  </th>
-                  <th className="px-6 py-3 text-right text-sm font-semibold">
-                    Acciones
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y">
-                {filteredContacts.map((contact) => (
-                  <tr
-                    key={contact._id}
-                    className="hover:bg-muted/50 transition-colors"
-                  >
-                    <td className="px-6 py-4 text-sm font-medium">
-                      {contact.firstName} {contact.lastName}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-muted-foreground">
-                      {contact.email}
-                    </td>
-                    <td className="px-6 py-4 text-sm">
-                      {contact.phone || '-'}
-                    </td>
-                    <td className="px-6 py-4 text-sm">
-                      <span
-                        className={`font-medium ${STATUS_COLORS[contact.status] || 'text-gray-600'}`}
-                      >
-                        {STATUS_OPTIONS[contact.status] || contact.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex justify-end gap-1">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => navigate(`/contacts/${contact._id}`)}
-                          title="Ver detalles"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() =>
-                            navigate(`/contacts/${contact._id}/edit`)
-                          }
-                          title="Editar"
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleDelete(contact._id)}
-                          title={
-                            deleteId === contact._id
-                              ? 'Clic de nuevo para confirmar'
-                              : 'Eliminar'
-                          }
-                          className={
-                            deleteId === contact._id ? 'text-destructive' : ''
-                          }
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </td>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            {/* Vista Desktop - Tabla */}
+            <div className="hidden md:block border rounded-lg overflow-hidden">
+              <table className="w-full">
+                <thead className="bg-muted border-b">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-sm font-semibold">
+                      Nombre
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold">
+                      Email
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold">
+                      Teléfono
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold">
+                      Estado
+                    </th>
+                    <th className="px-6 py-3 text-right text-sm font-semibold">
+                      Acciones
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y">
+                  {filteredContacts.map((contact) => (
+                    <tr
+                      key={contact._id}
+                      className="hover:bg-muted/50 transition-colors"
+                    >
+                      <td className="px-6 py-4 text-sm font-medium">
+                        {contact.firstName} {contact.lastName}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-muted-foreground">
+                        {contact.email}
+                      </td>
+                      <td className="px-6 py-4 text-sm">
+                        {contact.phone || '-'}
+                      </td>
+                      <td className="px-6 py-4 text-sm">
+                        <span
+                          className={`font-medium ${getStatusColor(contact.status)}`}
+                        >
+                          {getStatusLabel(contact.status)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex justify-end gap-1">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => navigate(`/contacts/${contact._id}`)}
+                            title="Ver detalles"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() =>
+                              navigate(`/contacts/${contact._id}/edit`)
+                            }
+                            title="Editar"
+                          >
+                            <Edit2 className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleDelete(contact._id)}
+                            title={
+                              deleteId === contact._id
+                                ? 'Clic de nuevo para confirmar'
+                                : 'Eliminar'
+                            }
+                            className={
+                              deleteId === contact._id ? 'text-destructive' : ''
+                            }
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-          {/* Vista Mobile - Cards */}
-          <div className="md:hidden space-y-3">
-            {filteredContacts.map((contact) => (
-              <Card
-                key={contact._id}
-                className="hover:shadow-md transition-shadow"
-              >
-                <CardContent className="pt-6">
+            {/* Vista Mobile - Cards */}
+            <div className="md:hidden space-y-3">
+              {filteredContacts.map((contact) => (
+                <Card
+                  key={contact._id}
+                  className="p-6 hover:shadow-md transition-shadow"
+                >
                   <div className="space-y-4">
                     <div>
                       <h3 className="font-semibold">
@@ -318,9 +309,9 @@ export default function ContactsPage() {
 
                     <div className="flex items-center justify-between pt-2 border-t">
                       <span
-                        className={`text-sm font-medium ${STATUS_COLORS[contact.status] || 'text-gray-600'}`}
+                        className={`text-sm font-medium ${getStatusColor(contact.status)}`}
                       >
-                        {STATUS_OPTIONS[contact.status] || contact.status}
+                        {getStatusLabel(contact.status)}
                       </span>
                       <div className="flex gap-1">
                         <Button
@@ -352,12 +343,12 @@ export default function ContactsPage() {
                       </div>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

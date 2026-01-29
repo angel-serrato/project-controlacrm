@@ -174,7 +174,7 @@ export default function ContactEditPage() {
           {/* Error Alert */}
           {serverError && (
             <div className="flex items-start gap-3 p-4 rounded-lg border border-destructive/50 bg-destructive/10">
-              <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+              <AlertCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
               <p className="text-sm text-destructive">{serverError}</p>
             </div>
           )}

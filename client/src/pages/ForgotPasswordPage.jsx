@@ -11,20 +11,18 @@ import { Label } from '../components/ui/label';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '../components/ui/card';
-import { AlertCircle, ArrowLeft, CheckCircle2, Mail } from 'lucide-react';
+import { AlertCircle, ArrowLeft, CheckCircle2 } from 'lucide-react';
 
-// Schema de validación con Zod
 const forgotPasswordSchema = z.object({
   email: z
     .string({ required_error: 'Email es requerido' })
     .email({ message: 'Por favor ingresa un email válido' }),
 });
 
-function ForgotPasswordPage() {
+export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -67,10 +65,13 @@ function ForgotPasswordPage() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="border-b border-border sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
+      <header className="border-b border-border sticky top-0 z-50 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+        <nav
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between"
+          aria-label="Navegación principal"
+        >
+          <Link to="/" className="flex items-center gap-2 min-w-0">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
               <span className="text-primary-foreground font-bold text-xs sm:text-sm">
                 CRM
               </span>
@@ -78,65 +79,58 @@ function ForgotPasswordPage() {
             <span className="font-semibold text-sm sm:text-base truncate">
               ControlaCRM
             </span>
-          </div>
+          </Link>
 
-          <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
-            <Link to="/">
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-xs sm:text-sm h-8 sm:h-9"
-              >
-                Inicio
-              </Button>
-            </Link>
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <Link to="/login">
-              <Button size="sm" className="text-xs sm:text-sm h-8 sm:h-9">
+              <Button variant="outline" size="sm">
                 Iniciar Sesión
               </Button>
+            </Link>
+            <Link to="/register">
+              <Button size="sm">Registrarse</Button>
             </Link>
           </div>
         </nav>
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
-        <Card className="w-full max-w-md border border-border">
-          <CardHeader className="space-y-1 text-center p-4 sm:p-6">
-            <CardTitle className="text-xl sm:text-2xl">
-              Recuperar Contraseña
-            </CardTitle>
-            <CardDescription className="text-xs sm:text-sm">
+      <main className="flex-1 flex items-center justify-center px-4 py-12">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-1 text-center p-6">
+            <CardTitle className="text-2xl">Recuperar Contraseña</CardTitle>
+            <p className="text-sm text-muted-foreground mt-1">
               {isSubmitted
                 ? 'Revisa tu email para las instrucciones'
                 : 'Ingresa tu email para recibir instrucciones'}
-            </CardDescription>
+            </p>
           </CardHeader>
 
-          <CardContent className="space-y-4 sm:space-y-6 p-4 sm:p-6">
-            {/* Success Message */}
+          <CardContent className="p-6 space-y-4">
             {isSubmitted ? (
               <div className="space-y-4">
-                {/* Success Alert */}
-                <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg border border-green-200/50 bg-green-50/50 dark:border-green-900/50 dark:bg-green-950/20">
-                  <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-500 flex-shrink-0 mt-0.5" />
+                <div
+                  className="flex items-start gap-3 p-4 rounded-lg border border-green-200/50 bg-green-50/50 dark:border-green-900/50 dark:bg-green-950/20"
+                  role="alert"
+                >
+                  <CheckCircle2
+                    className="w-5 h-5 text-green-600 dark:text-green-500 shrink-0 mt-0.5"
+                    aria-hidden="true"
+                  />
                   <div className="space-y-1">
-                    <p className="text-xs sm:text-sm font-medium text-green-800 dark:text-green-400">
+                    <p className="text-sm font-medium text-green-800 dark:text-green-400">
                       Email enviado exitosamente
                     </p>
-                    <p className="text-xs sm:text-sm text-green-700 dark:text-green-400/80">
-                      Hemos enviado las instrucciones de recuperación a{' '}
+                    <p className="text-sm text-green-700 dark:text-green-400/80">
+                      Hemos enviado las instrucciones a{' '}
                       <span className="font-semibold">{submittedEmail}</span>
                     </p>
                   </div>
                 </div>
 
-                {/* Info Box */}
-                <div className="p-3 sm:p-4 rounded-lg bg-muted border border-border space-y-2 sm:space-y-3">
-                  <h4 className="font-medium text-xs sm:text-sm">
-                    ¿Qué hacer ahora?
-                  </h4>
-                  <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
+                <div className="p-4 rounded-lg bg-muted border border-border text-sm space-y-3">
+                  <h4 className="font-medium">¿Qué hacer ahora?</h4>
+                  <ul className="space-y-2 text-muted-foreground">
                     <li className="flex items-start gap-2">
                       <span className="text-primary mt-0.5">1.</span>
                       <span>
@@ -158,7 +152,6 @@ function ForgotPasswordPage() {
                   </ul>
                 </div>
 
-                {/* Divider */}
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-border"></div>
@@ -170,9 +163,8 @@ function ForgotPasswordPage() {
                   </div>
                 </div>
 
-                {/* Back to Login */}
-                <div className="space-y-2 sm:space-y-3">
-                  <p className="text-xs sm:text-sm text-muted-foreground text-center">
+                <div className="space-y-3">
+                  <p className="text-sm text-muted-foreground text-center">
                     ¿No recibiste el email?{' '}
                     <button
                       onClick={() => {
@@ -185,81 +177,81 @@ function ForgotPasswordPage() {
                     </button>
                   </p>
 
-                  <Link to="/login">
-                    <Button
-                      variant="outline"
-                      className="w-full gap-2 text-xs sm:text-sm h-9 sm:h-10"
-                    >
-                      <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <Link to="/login" className="block">
+                    <Button variant="outline" className="w-full gap-2">
+                      <ArrowLeft className="w-4 h-4" aria-hidden="true" />
                       Volver a Iniciar Sesión
                     </Button>
                   </Link>
                 </div>
               </div>
             ) : (
-              <div className="space-y-6">
-                {/* Error Alert */}
+              <div className="space-y-4">
                 {serverError && (
-                  <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg border border-destructive/50 bg-destructive/10">
-                    <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-destructive flex-shrink-0 mt-0.5" />
-                    <p className="text-xs sm:text-sm text-destructive">
-                      {serverError}
-                    </p>
+                  <div
+                    className="flex items-start gap-3 p-4 rounded-lg border border-destructive/50 bg-destructive/10"
+                    role="alert"
+                  >
+                    <AlertCircle
+                      className="w-5 h-5 text-destructive shrink-0 mt-0.5"
+                      aria-hidden="true"
+                    />
+                    <p className="text-sm text-destructive">{serverError}</p>
                   </div>
                 )}
 
-                {/* Form */}
-                <form
-                  onSubmit={handleSubmit(onSubmit)}
-                  className="space-y-3 sm:space-y-4"
-                >
-                  {/* Email Field */}
-                  <div className="space-y-1.5 sm:space-y-2">
-                    <Label htmlFor="email" className="text-xs sm:text-sm">
-                      Email
-                    </Label>
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
                     <Input
                       id="email"
                       type="email"
                       placeholder="tu@email.com"
-                      className="text-xs sm:text-sm h-9 sm:h-10"
+                      aria-required="true"
+                      aria-describedby={
+                        errors.email ? 'email-error' : undefined
+                      }
                       {...register('email')}
                     />
                     {errors.email && (
-                      <p className="text-xs sm:text-sm text-destructive">
+                      <p className="text-sm text-destructive" id="email-error">
                         {errors.email.message}
                       </p>
                     )}
                   </div>
 
-                  {/* Submit Button */}
                   <Button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full text-sm h-9 sm:h-10"
+                    className="w-full"
+                    aria-busy={isLoading}
                   >
                     {isLoading ? 'Enviando...' : 'Enviar Instrucciones'}
                   </Button>
                 </form>
 
-                {/* Info Box */}
-                <div className="p-3 sm:p-4 rounded-lg bg-muted border border-border text-xs sm:text-sm text-muted-foreground space-y-2">
+                <div className="p-4 rounded-lg bg-muted border border-border text-sm text-muted-foreground space-y-2">
                   <p className="font-medium text-foreground">
                     Notas importantes:
                   </p>
                   <ul className="space-y-1">
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 className="w-3 h-3 text-primary flex-shrink-0" />
+                      <CheckCircle2
+                        className="w-3 h-3 text-primary shrink-0"
+                        aria-hidden="true"
+                      />
                       El enlace será válido por 24 horas
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 className="w-3 h-3 text-primary flex-shrink-0" />
+                      <CheckCircle2
+                        className="w-3 h-3 text-primary shrink-0"
+                        aria-hidden="true"
+                      />
                       Si no ves el email, revisa spam
                     </li>
                   </ul>
                 </div>
 
-                {/* Divider */}
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-border"></div>
@@ -271,9 +263,8 @@ function ForgotPasswordPage() {
                   </div>
                 </div>
 
-                {/* Back to Login */}
-                <div className="text-center space-y-1.5 sm:space-y-2">
-                  <p className="text-xs sm:text-sm text-muted-foreground">
+                <div className="text-center space-y-2 text-sm text-muted-foreground">
+                  <p>
                     ¿Recordaste tu contraseña?{' '}
                     <Link
                       to="/login"
@@ -282,7 +273,7 @@ function ForgotPasswordPage() {
                       Inicia sesión
                     </Link>
                   </p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">
+                  <p>
                     ¿No tienes cuenta?{' '}
                     <Link
                       to="/register"
@@ -299,30 +290,28 @@ function ForgotPasswordPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border py-8 sm:py-12 px-4 sm:px-6 lg:px-8 bg-muted/50">
+      <footer className="border-t border-border py-12 px-4 bg-muted/50">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
             {/* Brand */}
-            <div className="space-y-2 sm:space-y-4">
+            <div className="col-span-2 lg:col-span-1 space-y-4">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
-                  <span className="text-primary-foreground font-bold text-xs sm:text-sm">
+                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
+                  <span className="text-primary-foreground font-bold text-sm">
                     CRM
                   </span>
                 </div>
-                <span className="font-semibold text-xs sm:text-sm truncate">
-                  ControlaCRM
-                </span>
+                <span className="font-semibold text-sm">ControlaCRM</span>
               </div>
-              <p className="text-xs sm:text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 La solución CRM más simple y poderosa para tu equipo de ventas
               </p>
             </div>
 
-            {/* Links */}
-            <div className="space-y-2 sm:space-y-3">
-              <h3 className="font-semibold text-xs sm:text-sm">Producto</h3>
-              <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
+            {/* Producto */}
+            <nav className="space-y-3">
+              <h3 className="font-semibold text-sm">Producto</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
                   <a
                     href="#"
@@ -348,12 +337,12 @@ function ForgotPasswordPage() {
                   </a>
                 </li>
               </ul>
-            </div>
+            </nav>
 
-            {/* Company */}
-            <div className="space-y-2 sm:space-y-3">
-              <h3 className="font-semibold text-xs sm:text-sm">Empresa</h3>
-              <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
+            {/* Empresa */}
+            <nav className="space-y-3">
+              <h3 className="font-semibold text-sm">Empresa</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
                   <a
                     href="#"
@@ -379,12 +368,12 @@ function ForgotPasswordPage() {
                   </a>
                 </li>
               </ul>
-            </div>
+            </nav>
 
             {/* Legal */}
-            <div className="space-y-2 sm:space-y-3">
-              <h3 className="font-semibold text-xs sm:text-sm">Legal</h3>
-              <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
+            <nav className="space-y-3">
+              <h3 className="font-semibold text-sm">Legal</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
                   <a
                     href="#"
@@ -410,12 +399,11 @@ function ForgotPasswordPage() {
                   </a>
                 </li>
               </ul>
-            </div>
+            </nav>
           </div>
 
-          {/* Divider */}
-          <div className="border-t border-border pt-6 sm:pt-8">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
+          <div className="border-t border-border pt-8">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
               <p>&copy; 2026 ControlaCRM. Todos los derechos reservados.</p>
               <div className="flex gap-6">
                 <a href="#" className="hover:text-foreground transition-colors">
@@ -435,5 +423,3 @@ function ForgotPasswordPage() {
     </div>
   );
 }
-
-export default ForgotPasswordPage;

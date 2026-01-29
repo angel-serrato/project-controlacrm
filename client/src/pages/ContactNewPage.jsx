@@ -8,15 +8,9 @@ import api from '../services/api';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '../components/ui/card';
+import { Card } from '../components/ui/card';
 import { AlertCircle, Loader2 } from 'lucide-react';
 
-// Schema de validación con Zod
 const contactSchema = z.object({
   firstName: z
     .string({ required_error: 'El nombre es obligatorio' })
@@ -63,13 +57,11 @@ export default function ContactNewPage() {
     },
   });
 
-  // Cargar usuarios sales
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         setLoadingUsers(true);
         const { data: response } = await api.get('/users');
-        // Filtrar solo usuarios con rol "sales"
         const salesUsers = response.data.filter((u) => u.role === 'sales');
         setUsers(salesUsers);
       } catch (error) {
@@ -88,7 +80,6 @@ export default function ContactNewPage() {
     setServerError('');
 
     try {
-      // POST a /api/v1/contacts
       await api.post('/contacts', {
         firstName: data.firstName,
         lastName: data.lastName,
@@ -96,12 +87,11 @@ export default function ContactNewPage() {
         phone: data.phone || '',
         notes: data.notes || '',
         assignedTo: data.assignedTo,
-        status: 'NEW', // El backend lo fuerza igual, pero incluimos por claridad
+        status: 'NEW',
       });
 
       toast.success('¡Contacto creado exitosamente!');
 
-      // Redirigir a lista de contactos después de 1 segundo
       setTimeout(() => {
         navigate('/contacts');
       }, 1000);
@@ -120,44 +110,39 @@ export default function ContactNewPage() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header Section */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            Crear Nuevo Contacto
-          </h1>
-          <p className="text-muted-foreground">
-            Completa los datos para agregar un nuevo contacto
-          </p>
+    <div className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-2xl space-y-6">
+        {/* Header */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
+              Crear Nuevo Contacto
+            </h1>
+            <p className="text-sm sm:text-base text-muted-foreground mt-1">
+              Completa los datos para agregar un nuevo contacto
+            </p>
+          </div>
+          <Button onClick={() => navigate('/contacts')} variant="outline">
+            Volver
+          </Button>
         </div>
-        <Button onClick={() => navigate('/contacts')} variant="outline">
-          Volver
-        </Button>
-      </div>
 
-      {/* Form Card */}
-      <Card>
-        <CardContent className="pt-6 space-y-6">
-          {/* Error Alert */}
+        <Card className="p-6">
           {serverError && (
-            <div className="flex items-start gap-3 p-4 rounded-lg border border-destructive/50 bg-destructive/10">
-              <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+            <div className="flex gap-3 p-4 rounded-lg border border-destructive/50 bg-destructive/10 mb-6">
+              <AlertCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
               <p className="text-sm text-destructive">{serverError}</p>
             </div>
           )}
 
-          {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Nombre y Apellido - Two columns */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-              {/* First Name */}
               <div className="space-y-2">
                 <Label htmlFor="firstName">Nombre *</Label>
                 <Input
                   id="firstName"
                   type="text"
-                  placeholder="Juan"
+                  placeholder="John"
                   {...register('firstName')}
                 />
                 {errors.firstName && (
@@ -167,13 +152,12 @@ export default function ContactNewPage() {
                 )}
               </div>
 
-              {/* Last Name */}
               <div className="space-y-2">
                 <Label htmlFor="lastName">Apellido *</Label>
                 <Input
                   id="lastName"
                   type="text"
-                  placeholder="Pérez"
+                  placeholder="Doe"
                   {...register('lastName')}
                 />
                 {errors.lastName && (
@@ -184,13 +168,12 @@ export default function ContactNewPage() {
               </div>
             </div>
 
-            {/* Email */}
             <div className="space-y-2">
-              <Label htmlFor="email">Email *</Label>
+              <Label htmlFor="email">Correo electrónico *</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="juan@example.com"
+                placeholder="johndoe@example.com"
                 {...register('email')}
               />
               {errors.email && (
@@ -200,7 +183,6 @@ export default function ContactNewPage() {
               )}
             </div>
 
-            {/* Teléfono */}
             <div className="space-y-2">
               <Label htmlFor="phone">Teléfono</Label>
               <Input
@@ -216,7 +198,6 @@ export default function ContactNewPage() {
               )}
             </div>
 
-            {/* Asignar a usuario */}
             <div className="space-y-2">
               <Label htmlFor="assignedTo">Asignar a *</Label>
               {loadingUsers ? (
@@ -245,7 +226,6 @@ export default function ContactNewPage() {
               )}
             </div>
 
-            {/* Notas */}
             <div className="space-y-2">
               <Label htmlFor="notes">Notas</Label>
               <textarea
@@ -262,8 +242,7 @@ export default function ContactNewPage() {
               )}
             </div>
 
-            {/* Botones */}
-            <div className="flex gap-3 pt-4">
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
               <Button
                 type="submit"
                 disabled={isLoading || loadingUsers}
@@ -276,13 +255,14 @@ export default function ContactNewPage() {
                 variant="outline"
                 onClick={() => navigate('/contacts')}
                 disabled={isLoading}
+                className="sm:flex-none"
               >
                 Cancelar
               </Button>
             </div>
           </form>
-        </CardContent>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 }
