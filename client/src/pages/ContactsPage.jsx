@@ -1,37 +1,37 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../store/authStore";
-import api from "../services/api";
-import { Button } from "../components/ui/button";
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
+import api from '../services/api';
+import { Button } from '../components/ui/button';
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
+} from '../components/ui/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../components/ui/select";
-import { Eye, Edit2, Trash2, Plus, Loader2, Search } from "lucide-react";
-import { Input } from "../components/ui/input";
-import { toast } from "react-hot-toast";
+} from '../components/ui/select';
+import { Eye, Edit2, Trash2, Plus, Loader2, Search } from 'lucide-react';
+import { Input } from '../components/ui/input';
+import { toast } from 'react-hot-toast';
 
 const STATUS_OPTIONS = {
-  NEW: "Nuevo",
-  IN_PROGRESS: "En Progreso",
-  CONTACTED: "Contactado",
-  COMPLETED: "Completado",
+  NEW: 'Nuevo',
+  IN_PROGRESS: 'En Progreso',
+  CONTACTED: 'Contactado',
+  COMPLETED: 'Completado',
 };
 
 const STATUS_COLORS = {
-  NEW: "text-blue-600",
-  IN_PROGRESS: "text-yellow-600",
-  CONTACTED: "text-purple-600",
-  COMPLETED: "text-green-600",
+  NEW: 'text-blue-600',
+  IN_PROGRESS: 'text-yellow-600',
+  CONTACTED: 'text-purple-600',
+  COMPLETED: 'text-green-600',
 };
 
 export default function ContactsPage() {
@@ -40,8 +40,8 @@ export default function ContactsPage() {
   const [contacts, setContacts] = useState([]);
   const [filteredContacts, setFilteredContacts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState("ALL");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
   const [deleteId, setDeleteId] = useState(null);
 
   // Cargar contactos
@@ -49,12 +49,12 @@ export default function ContactsPage() {
     const fetchContacts = async () => {
       try {
         setLoading(true);
-        const { data: response } = await api.get("/contacts");
+        const { data: response } = await api.get('/contacts');
         setContacts(response.data || []);
       } catch (error) {
-        console.error("Error cargando contactos:", error);
+        console.error('Error cargando contactos:', error);
         toast.error(
-          error.response?.data?.message || "Error al cargar contactos",
+          error.response?.data?.message || 'Error al cargar contactos'
         );
       } finally {
         setLoading(false);
@@ -69,7 +69,7 @@ export default function ContactsPage() {
     let filtered = contacts;
 
     // Filtrar por estado
-    if (statusFilter !== "ALL") {
+    if (statusFilter !== 'ALL') {
       filtered = filtered.filter((c) => c.status === statusFilter);
     }
 
@@ -79,12 +79,12 @@ export default function ContactsPage() {
       filtered = filtered.filter(
         (c) =>
           `${c.firstName} ${c.lastName}`.toLowerCase().includes(query) ||
-          c.email.toLowerCase().includes(query),
+          c.email.toLowerCase().includes(query)
       );
     }
 
     // Filtrar por rol: usuarios sales solo ven sus contactos
-    if (user?.role === "sales") {
+    if (user?.role === 'sales') {
       filtered = filtered.filter((c) => c.assignedTo?._id === user?.id);
     }
 
@@ -98,11 +98,11 @@ export default function ContactsPage() {
         await api.delete(`/contacts/${id}`);
         setContacts(contacts.filter((c) => c._id !== id));
         setDeleteId(null);
-        toast.success("Contacto eliminado exitosamente");
+        toast.success('Contacto eliminado exitosamente');
       } catch (error) {
-        console.error("Error eliminando contacto:", error);
+        console.error('Error eliminando contacto:', error);
         toast.error(
-          error.response?.data?.message || "Error al eliminar contacto",
+          error.response?.data?.message || 'Error al eliminar contacto'
         );
       }
     } else {
@@ -130,7 +130,7 @@ export default function ContactsPage() {
           </p>
         </div>
         <Button
-          onClick={() => navigate("/contacts/new")}
+          onClick={() => navigate('/contacts/new')}
           className="gap-2 w-full sm:w-auto"
         >
           <Plus className="h-4 w-4" />
@@ -186,19 +186,19 @@ export default function ContactsPage() {
           <CardContent className="pt-12 pb-12 text-center">
             <p className="text-muted-foreground mb-6">
               {contacts.length === 0
-                ? "No hay contactos registrados aún"
-                : "No se encontraron contactos con los filtros aplicados"}
+                ? 'No hay contactos registrados aún'
+                : 'No se encontraron contactos con los filtros aplicados'}
             </p>
             {contacts.length === 0 && (
               <Button
-                onClick={() => navigate("/contacts/new")}
+                onClick={() => navigate('/contacts/new')}
                 variant="outline"
               >
                 Crear primer contacto
               </Button>
             )}
             {contacts.length > 0 && searchQuery && (
-              <Button onClick={() => setSearchQuery("")} variant="outline">
+              <Button onClick={() => setSearchQuery('')} variant="outline">
                 Limpiar búsqueda
               </Button>
             )}
@@ -241,11 +241,11 @@ export default function ContactsPage() {
                       {contact.email}
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      {contact.phone || "-"}
+                      {contact.phone || '-'}
                     </td>
                     <td className="px-6 py-4 text-sm">
                       <span
-                        className={`font-medium ${STATUS_COLORS[contact.status] || "text-gray-600"}`}
+                        className={`font-medium ${STATUS_COLORS[contact.status] || 'text-gray-600'}`}
                       >
                         {STATUS_OPTIONS[contact.status] || contact.status}
                       </span>
@@ -276,11 +276,11 @@ export default function ContactsPage() {
                           onClick={() => handleDelete(contact._id)}
                           title={
                             deleteId === contact._id
-                              ? "Clic de nuevo para confirmar"
-                              : "Eliminar"
+                              ? 'Clic de nuevo para confirmar'
+                              : 'Eliminar'
                           }
                           className={
-                            deleteId === contact._id ? "text-destructive" : ""
+                            deleteId === contact._id ? 'text-destructive' : ''
                           }
                         >
                           <Trash2 className="h-4 w-4" />
@@ -318,7 +318,7 @@ export default function ContactsPage() {
 
                     <div className="flex items-center justify-between pt-2 border-t">
                       <span
-                        className={`text-sm font-medium ${STATUS_COLORS[contact.status] || "text-gray-600"}`}
+                        className={`text-sm font-medium ${STATUS_COLORS[contact.status] || 'text-gray-600'}`}
                       >
                         {STATUS_OPTIONS[contact.status] || contact.status}
                       </span>
@@ -344,7 +344,7 @@ export default function ContactsPage() {
                           variant="ghost"
                           onClick={() => handleDelete(contact._id)}
                           className={
-                            deleteId === contact._id ? "text-destructive" : ""
+                            deleteId === contact._id ? 'text-destructive' : ''
                           }
                         >
                           <Trash2 className="h-4 w-4" />

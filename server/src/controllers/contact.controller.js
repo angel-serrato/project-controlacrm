@@ -3,13 +3,11 @@ import * as contactService from '../services/contact.service.js';
 export const createContact = async (req, res, next) => {
   try {
     const contact = await contactService.createContact(req.body);
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: 'Contacto creado exitosamente',
-        data: contact,
-      });
+    res.status(201).json({
+      success: true,
+      message: 'Contacto creado exitosamente',
+      data: contact,
+    });
   } catch (err) {
     next(err);
   }

@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { Button } from "../components/ui/button";
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Button } from '../components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
+} from '../components/ui/card';
 import {
   ArrowLeft,
   Mail,
@@ -16,9 +16,9 @@ import {
   Calendar,
   FileText,
   Loader2,
-} from "lucide-react";
-import api from "../services/api";
-import { toast } from "react-hot-toast";
+} from 'lucide-react';
+import api from '../services/api';
+import { toast } from 'react-hot-toast';
 
 export default function ContactDetailPage() {
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ export default function ContactDetailPage() {
         setContact(response.data);
       } catch (err) {
         const errorMsg =
-          err.response?.data?.message || "Error al cargar el contacto";
+          err.response?.data?.message || 'Error al cargar el contacto';
         setError(errorMsg);
         toast.error(errorMsg);
       } finally {
@@ -51,18 +51,18 @@ export default function ContactDetailPage() {
 
   const handleDelete = async () => {
     if (
-      !window.confirm("¿Estás seguro de que deseas eliminar este contacto?")
+      !window.confirm('¿Estás seguro de que deseas eliminar este contacto?')
     ) {
       return;
     }
 
     try {
       await api.delete(`/contacts/${id}`);
-      toast.success("Contacto eliminado exitosamente");
-      navigate("/contacts");
+      toast.success('Contacto eliminado exitosamente');
+      navigate('/contacts');
     } catch (err) {
       const errorMsg =
-        err.response?.data?.message || "Error al eliminar el contacto";
+        err.response?.data?.message || 'Error al eliminar el contacto';
       toast.error(errorMsg);
     }
   };
@@ -82,7 +82,7 @@ export default function ContactDetailPage() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => navigate("/contacts")}
+            onClick={() => navigate('/contacts')}
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
@@ -93,9 +93,9 @@ export default function ContactDetailPage() {
         <Card>
           <CardContent className="pt-12 pb-12 text-center">
             <p className="text-muted-foreground mb-6">
-              {error || "El contacto que buscas no existe"}
+              {error || 'El contacto que buscas no existe'}
             </p>
-            <Button onClick={() => navigate("/contacts")}>
+            <Button onClick={() => navigate('/contacts')}>
               Volver a Contactos
             </Button>
           </CardContent>
@@ -106,36 +106,36 @@ export default function ContactDetailPage() {
 
   const getStatusLabel = (status) => {
     const labels = {
-      NEW: "Nuevo",
-      IN_PROGRESS: "En Progreso",
-      CONTACTED: "Contactado",
-      COMPLETED: "Completado",
+      NEW: 'Nuevo',
+      IN_PROGRESS: 'En Progreso',
+      CONTACTED: 'Contactado',
+      COMPLETED: 'Completado',
     };
     return labels[status] || status;
   };
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "NEW":
-        return "text-blue-600";
-      case "IN_PROGRESS":
-        return "text-yellow-600";
-      case "CONTACTED":
-        return "text-purple-600";
-      case "COMPLETED":
-        return "text-green-600";
+      case 'NEW':
+        return 'text-blue-600';
+      case 'IN_PROGRESS':
+        return 'text-yellow-600';
+      case 'CONTACTED':
+        return 'text-purple-600';
+      case 'COMPLETED':
+        return 'text-green-600';
       default:
-        return "text-gray-600";
+        return 'text-gray-600';
     }
   };
 
   const formatDate = (date) => {
-    return new Date(date).toLocaleDateString("es-ES", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+    return new Date(date).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   };
 
@@ -147,7 +147,7 @@ export default function ContactDetailPage() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => navigate("/contacts")}
+            onClick={() => navigate('/contacts')}
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
@@ -288,7 +288,7 @@ export default function ContactDetailPage() {
                 <div className="flex items-center gap-2">
                   <User className="h-5 w-5 text-muted-foreground" />
                   <span className="text-sm">
-                    {contact.assignedTo.email || "Sin asignar"}
+                    {contact.assignedTo.email || 'Sin asignar'}
                   </span>
                 </div>
               </CardContent>

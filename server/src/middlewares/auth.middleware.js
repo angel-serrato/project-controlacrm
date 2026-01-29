@@ -1,13 +1,8 @@
 import jwt from 'jsonwebtoken';
 
-// Validar que JWT_SECRET está configurado
-if (!process.env.JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable is not configured');
-}
-
-const JWT_SECRET = process.env.JWT_SECRET;
-
 export const verifyToken = (req, res, next) => {
+  const JWT_SECRET = process.env.JWT_SECRET;
+
   const authHeader = req.headers['authorization'];
   if (!authHeader) {
     return res.status(401).json({
@@ -26,7 +21,6 @@ export const verifyToken = (req, res, next) => {
 
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
     if (err) {
-      // Diferenciar tipos de error
       if (err.name === 'TokenExpiredError') {
         return res.status(401).json({
           success: false,
@@ -50,7 +44,6 @@ export const verifyToken = (req, res, next) => {
       });
     }
 
-    // Validar estructura del payload
     if (!decoded.id || !decoded.role) {
       return res.status(401).json({
         success: false,

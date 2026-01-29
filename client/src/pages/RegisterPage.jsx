@@ -1,52 +1,50 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { toast } from "react-hot-toast";
-import api from "../services/api";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { toast } from 'react-hot-toast';
+import api from '../services/api';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
+} from '../components/ui/card';
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "../components/ui/select";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
+} from '../components/ui/select';
+import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
 // Schema de validación con Zod
 const registerSchema = z
   .object({
-    email: z
-      .string({ required_error: "Email es requerido" })
-      .email("Por favor ingresa un email válido"),
+    email: z.email({ message: 'Por favor ingresa un email válido' }),
     password: z
-      .string({ required_error: "Contraseña es requerida" })
-      .min(6, "La contraseña debe tener al menos 6 caracteres"),
+      .string({ required_error: 'Contraseña es requerida' })
+      .min(6, { message: 'La contraseña debe tener al menos 6 caracteres' }),
     confirmPassword: z
-      .string({ required_error: "Debes confirmar la contraseña" })
-      .min(6, "La contraseña debe tener al menos 6 caracteres"),
-    role: z.enum(["admin", "sales"], { required_error: "Elige un rol" }),
+      .string({ required_error: 'Debes confirmar la contraseña' })
+      .min(6, { message: 'La contraseña debe tener al menos 6 caracteres' }),
+    role: z.enum(['admin', 'sales'], { required_error: 'Elige un rol' }),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Las contraseñas no coinciden",
-    path: ["confirmPassword"],
+    message: 'Las contraseñas no coinciden',
+    path: ['confirmPassword'],
   });
 
-function RegisterPage() {
+export default function RegisterPage() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [serverError, setServerError] = useState("");
+  const [serverError, setServerError] = useState('');
 
   const {
     register,
@@ -56,32 +54,32 @@ function RegisterPage() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(registerSchema),
-    mode: "onBlur",
-    defaultValues: { role: "" },
+    mode: 'onBlur',
+    defaultValues: { role: '' },
   });
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-    setServerError("");
+    setServerError('');
 
     try {
-      const response = await api.post("/auth/register", {
+      const response = await api.post('/auth/register', {
         email: data.email,
         password: data.password,
         role: data.role,
       });
-      toast.success("¡Cuenta creada exitosamente!");
+      toast.success('¡Cuenta creada exitosamente!');
       setTimeout(() => {
-        navigate("/login");
+        navigate('/login');
       }, 1500);
     } catch (error) {
       const errorMsg =
         error.response?.data?.message ||
         error.message ||
-        "Error al registrarse. Por favor, intenta de nuevo.";
+        'Error al registrarse. Por favor, intenta de nuevo.';
       setServerError(errorMsg);
       toast.error(errorMsg);
-      console.error("Register error:", error);
+      console.error('Register error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -158,7 +156,7 @@ function RegisterPage() {
                   type="email"
                   placeholder="tu@email.com"
                   className="text-xs sm:text-sm h-9 sm:h-10"
-                  {...register("email")}
+                  {...register('email')}
                 />
                 {errors.email && (
                   <p className="text-xs sm:text-sm text-destructive">
@@ -177,7 +175,7 @@ function RegisterPage() {
                   type="password"
                   placeholder="••••••••"
                   className="text-xs sm:text-sm h-9 sm:h-10"
-                  {...register("password")}
+                  {...register('password')}
                 />
                 {errors.password && (
                   <p className="text-xs sm:text-sm text-destructive">
@@ -196,7 +194,7 @@ function RegisterPage() {
                   type="password"
                   placeholder="••••••••"
                   className="text-xs sm:text-sm h-9 sm:h-10"
-                  {...register("confirmPassword")}
+                  {...register('confirmPassword')}
                 />
                 {errors.confirmPassword && (
                   <p className="text-xs sm:text-sm text-destructive">
@@ -211,9 +209,9 @@ function RegisterPage() {
                   Rol
                 </Label>
                 <Select
-                  value={watch("role")}
+                  value={watch('role')}
                   onValueChange={(value) =>
-                    setValue("role", value, { shouldValidate: true })
+                    setValue('role', value, { shouldValidate: true })
                   }
                 >
                   <SelectTrigger
@@ -240,7 +238,7 @@ function RegisterPage() {
                 disabled={isLoading}
                 className="w-full text-sm h-9 sm:h-10"
               >
-                {isLoading ? "Registrando..." : "Crear Cuenta"}
+                {isLoading ? 'Registrando...' : 'Crear Cuenta'}
               </Button>
             </form>
 
@@ -259,7 +257,7 @@ function RegisterPage() {
             {/* Login Link */}
             <div className="text-center space-y-2 sm:space-y-4">
               <p className="text-xs sm:text-sm text-muted-foreground">
-                ¿Ya tienes cuenta?{" "}
+                ¿Ya tienes cuenta?{' '}
                 <Link
                   to="/login"
                   className="font-semibold text-primary hover:underline"
@@ -426,5 +424,3 @@ function RegisterPage() {
     </div>
   );
 }
-
-export default RegisterPage;

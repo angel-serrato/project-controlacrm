@@ -5,7 +5,9 @@ export const createContact = async (data) => {
   // RN-07: Validate assigned user is active and has sales role
   const assignedUser = await User.findById(data.assignedTo);
   if (!assignedUser || !assignedUser.active || assignedUser.role !== 'sales') {
-    const err = new Error('El contacto debe asignarse a un usuario "sales" activo');
+    const err = new Error(
+      'El contacto debe asignarse a un usuario "sales" activo'
+    );
     err.status = 400;
     throw err;
   }
@@ -51,8 +53,14 @@ export const updateContact = async (id, data) => {
   // RN-07: Use same validation if assignedTo is being changed
   if (data.assignedTo) {
     const assignedUser = await User.findById(data.assignedTo);
-    if (!assignedUser || !assignedUser.active || assignedUser.role !== 'sales') {
-      const err = new Error('El contacto debe asignarse a un usuario "sales" activo');
+    if (
+      !assignedUser ||
+      !assignedUser.active ||
+      assignedUser.role !== 'sales'
+    ) {
+      const err = new Error(
+        'El contacto debe asignarse a un usuario "sales" activo'
+      );
       err.status = 400;
       throw err;
     }
@@ -61,7 +69,9 @@ export const updateContact = async (id, data) => {
   const contact = await Contact.findByIdAndUpdate(id, data, {
     new: true,
     runValidators: true,
-  }).populate('assignedTo', 'email role').lean();
+  })
+    .populate('assignedTo', 'email role')
+    .lean();
 
   if (!contact) {
     const err = new Error('Contacto no encontrado');
@@ -108,7 +118,9 @@ export const updateContactStatus = async (id, status) => {
     id,
     { status },
     { new: true, runValidators: true }
-  ).populate('assignedTo', 'email role').lean();
+  )
+    .populate('assignedTo', 'email role')
+    .lean();
 
   if (!contact || !contact.active) {
     const err = new Error('Contacto no encontrado');
@@ -116,5 +128,4 @@ export const updateContactStatus = async (id, status) => {
     throw err;
   }
   return contact;
-};
 };

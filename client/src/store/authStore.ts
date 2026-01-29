@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 // Duración de la sesión en milisegundos (15 minutos)
 const SESSION_DURATION = 15 * 60 * 1000;
@@ -104,7 +104,7 @@ export const useAuthStore = create<AuthStore>()(
           // Sesión válida
           set({ isAuthenticated: true });
         } catch (error) {
-          console.error("Error initializing auth:", error);
+          console.error('Error initializing auth:', error);
           set({
             user: null,
             token: null,
@@ -115,7 +115,7 @@ export const useAuthStore = create<AuthStore>()(
       },
     }),
     {
-      name: "auth-storage",
+      name: 'auth-storage',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,
@@ -123,6 +123,6 @@ export const useAuthStore = create<AuthStore>()(
         isAuthenticated: state.isAuthenticated,
         loginTime: state.loginTime,
       }),
-    },
-  ),
+    }
+  )
 );

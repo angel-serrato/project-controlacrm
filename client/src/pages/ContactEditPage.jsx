@@ -1,46 +1,38 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { toast } from "react-hot-toast";
-import api from "../services/api";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card";
-import { AlertCircle, Loader2, ArrowLeft } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { toast } from 'react-hot-toast';
+import api from '../services/api';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Card, CardContent } from '../components/ui/card';
+import { AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
 
 // Schema de validación con Zod
 const contactSchema = z.object({
   firstName: z
-    .string({ required_error: "El nombre es obligatorio" })
-    .min(2, "El nombre debe tener al menos 2 caracteres"),
+    .string({ required_error: 'El nombre es obligatorio' })
+    .min(2, { message: 'El nombre debe tener al menos 2 caracteres' }),
   lastName: z
-    .string({ required_error: "El apellido es obligatorio" })
-    .min(2, "El apellido debe tener al menos 2 caracteres"),
-  email: z
-    .string({ required_error: "El email es obligatorio" })
-    .email("Por favor ingresa un email válido"),
+    .string({ required_error: 'El apellido es obligatorio' })
+    .min(2, { message: 'El apellido debe tener al menos 2 caracteres' }),
+  email: z.email({ message: 'Por favor ingresa un email válido' }),
   phone: z
     .string()
     .optional()
-    .refine(
-      (val) => !val || /^\+?[\d\s\-()]+$/.test(val),
-      "El teléfono no es válido",
-    ),
+    .refine((val) => !val || /^\+?[\d\s\-()]+$/.test(val), {
+      message: 'El teléfono no es válido',
+    }),
   notes: z.string().optional(),
-  status: z.enum(["NEW", "IN_PROGRESS", "CONTACTED", "COMPLETED"], {
-    required_error: "Debes seleccionar un estado",
+  status: z.enum(['NEW', 'IN_PROGRESS', 'CONTACTED', 'COMPLETED'], {
+    required_error: 'Debes seleccionar un estado',
   }),
   assignedTo: z
-    .string({ required_error: "Debes seleccionar un usuario" })
-    .min(1, "Debes seleccionar un usuario"),
+    .string({ required_error: 'Debes seleccionar un usuario' })
+    .min(1, { message: 'Debes seleccionar un usuario' }),
 });
 
 export default function ContactEditPage() {
@@ -49,7 +41,7 @@ export default function ContactEditPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [loadingContact, setLoadingContact] = useState(true);
-  const [serverError, setServerError] = useState("");
+  const [serverError, setServerError] = useState('');
   const [users, setUsers] = useState([]);
 
   const {
@@ -59,7 +51,7 @@ export default function ContactEditPage() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(contactSchema),
-    mode: "onBlur",
+    mode: 'onBlur',
   });
 
   // Cargar usuarios
@@ -67,12 +59,12 @@ export default function ContactEditPage() {
     const fetchUsers = async () => {
       try {
         setLoadingUsers(true);
-        const { data: response } = await api.get("/users");
-        const salesUsers = response.data.filter((u) => u.role === "sales");
+        const { data: response } = await api.get('/users');
+        const salesUsers = response.data.filter((u) => u.role === 'sales');
         setUsers(salesUsers);
       } catch (error) {
-        console.error("Error cargando usuarios:", error);
-        toast.error("Error al cargar usuarios");
+        console.error('Error cargando usuarios:', error);
+        toast.error('Error al cargar usuarios');
       } finally {
         setLoadingUsers(false);
       }
@@ -93,14 +85,14 @@ export default function ContactEditPage() {
           firstName: contact.firstName,
           lastName: contact.lastName,
           email: contact.email,
-          phone: contact.phone || "",
-          notes: contact.notes || "",
+          phone: contact.phone || '',
+          notes: contact.notes || '',
           status: contact.status,
-          assignedTo: contact.assignedTo?._id || "",
+          assignedTo: contact.assignedTo?._id || '',
         });
       } catch (error) {
-        console.error("Error cargando contacto:", error);
-        toast.error("Error al cargar el contacto");
+        console.error('Error cargando contacto:', error);
+        toast.error('Error al cargar el contacto');
       } finally {
         setLoadingContact(false);
       }
@@ -113,20 +105,20 @@ export default function ContactEditPage() {
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-    setServerError("");
+    setServerError('');
 
     try {
       await api.put(`/contacts/${id}`, {
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
-        phone: data.phone || "",
-        notes: data.notes || "",
+        phone: data.phone || '',
+        notes: data.notes || '',
         status: data.status,
         assignedTo: data.assignedTo,
       });
 
-      toast.success("¡Contacto actualizado exitosamente!");
+      toast.success('¡Contacto actualizado exitosamente!');
 
       setTimeout(() => {
         navigate(`/contacts/${id}`);
@@ -135,11 +127,11 @@ export default function ContactEditPage() {
       const errorMsg =
         error.response?.data?.message ||
         error.message ||
-        "Error al actualizar contacto. Por favor, intenta de nuevo.";
+        'Error al actualizar contacto. Por favor, intenta de nuevo.';
 
       setServerError(errorMsg);
       toast.error(errorMsg);
-      console.error("Update contact error:", error);
+      console.error('Update contact error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -198,7 +190,7 @@ export default function ContactEditPage() {
                   id="firstName"
                   type="text"
                   placeholder="Juan"
-                  {...register("firstName")}
+                  {...register('firstName')}
                 />
                 {errors.firstName && (
                   <p className="text-sm text-destructive">
@@ -214,7 +206,7 @@ export default function ContactEditPage() {
                   id="lastName"
                   type="text"
                   placeholder="Pérez"
-                  {...register("lastName")}
+                  {...register('lastName')}
                 />
                 {errors.lastName && (
                   <p className="text-sm text-destructive">
@@ -231,7 +223,7 @@ export default function ContactEditPage() {
                 id="email"
                 type="email"
                 placeholder="juan@example.com"
-                {...register("email")}
+                {...register('email')}
               />
               {errors.email && (
                 <p className="text-sm text-destructive">
@@ -247,7 +239,7 @@ export default function ContactEditPage() {
                 id="phone"
                 type="text"
                 placeholder="+1 234 567 8900"
-                {...register("phone")}
+                {...register('phone')}
               />
               {errors.phone && (
                 <p className="text-sm text-destructive">
@@ -261,7 +253,7 @@ export default function ContactEditPage() {
               <Label htmlFor="status">Estado *</Label>
               <select
                 id="status"
-                {...register("status")}
+                {...register('status')}
                 className="w-full px-3 py-2 border border-input rounded-md text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <option value="">Selecciona un estado</option>
@@ -288,7 +280,7 @@ export default function ContactEditPage() {
               ) : (
                 <select
                   id="assignedTo"
-                  {...register("assignedTo")}
+                  {...register('assignedTo')}
                   className="w-full px-3 py-2 border border-input rounded-md text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <option value="">Selecciona un usuario</option>
@@ -314,7 +306,7 @@ export default function ContactEditPage() {
                 placeholder="Información adicional sobre el contacto..."
                 className="w-full px-3 py-2 border border-input rounded-md text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
                 rows="4"
-                {...register("notes")}
+                {...register('notes')}
               />
               {errors.notes && (
                 <p className="text-sm text-destructive">
@@ -330,7 +322,7 @@ export default function ContactEditPage() {
                 disabled={isLoading || loadingUsers}
                 className="flex-1"
               >
-                {isLoading ? "Guardando cambios..." : "Guardar Cambios"}
+                {isLoading ? 'Guardando cambios...' : 'Guardar Cambios'}
               </Button>
               <Button
                 type="button"

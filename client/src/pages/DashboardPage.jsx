@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../store/authStore";
-import api from "../services/api";
-import { Button } from "../components/ui/button";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
+import api from '../services/api';
+import { Button } from '../components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
+} from '../components/ui/card';
 import {
   Users,
   Plus,
@@ -21,7 +21,7 @@ import {
   Clock,
   ArrowUpRight,
   Loader2,
-} from "lucide-react";
+} from 'lucide-react';
 
 function DashboardPage() {
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ function DashboardPage() {
       try {
         setLoading(true);
 
-        const { data: contactsResponse } = await api.get("/contacts");
+        const { data: contactsResponse } = await api.get('/contacts');
         const contacts = contactsResponse.data || [];
 
         // Total de contactos
@@ -91,15 +91,15 @@ function DashboardPage() {
             name: `${contact.firstName} ${contact.lastName}`,
             email: contact.email,
             status: contact.status,
-            date: new Date(contact.createdAt).toLocaleDateString("es-ES", {
-              month: "short",
-              day: "numeric",
+            date: new Date(contact.createdAt).toLocaleDateString('es-ES', {
+              month: 'short',
+              day: 'numeric',
             }),
           }));
 
         setRecentContacts(sorted);
       } catch (error) {
-        console.error("Error cargando dashboard:", error);
+        console.error('Error cargando dashboard:', error);
       } finally {
         setLoading(false);
       }
@@ -112,23 +112,23 @@ function DashboardPage() {
   const mainStats = [
     {
       id: 1,
-      title: "Total de Contactos",
+      title: 'Total de Contactos',
       value: totalContacts,
-      description: "Todos los contactos en la base de datos",
+      description: 'Todos los contactos en la base de datos',
       icon: Users,
       trend: null,
     },
     {
       id: 2,
-      title: "Este Mes",
+      title: 'Este Mes',
       value: monthContacts,
-      description: "Contactos agregados este mes",
+      description: 'Contactos agregados este mes',
       icon: Plus,
-      trend: monthContacts > 0 ? "up" : null,
+      trend: monthContacts > 0 ? 'up' : null,
     },
     {
       id: 3,
-      title: "En Contacto",
+      title: 'En Contacto',
       value: contactsByStatus.IN_PROGRESS,
       description: `${contactsByStatus.CONTACTED} contactados`,
       icon: PhoneCall,
@@ -139,22 +139,22 @@ function DashboardPage() {
   // Status breakdown
   const statusStats = [
     {
-      label: "Nuevos",
+      label: 'Nuevos',
       value: contactsByStatus.NEW,
       icon: Clock,
     },
     {
-      label: "En Progreso",
+      label: 'En Progreso',
       value: contactsByStatus.IN_PROGRESS,
       icon: TrendingUp,
     },
     {
-      label: "Contactados",
+      label: 'Contactados',
       value: contactsByStatus.CONTACTED,
       icon: PhoneCall,
     },
     {
-      label: "Completados",
+      label: 'Completados',
       value: contactsByStatus.COMPLETED,
       icon: CheckCircle2,
     },
@@ -162,25 +162,25 @@ function DashboardPage() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "NEW":
-        return "text-blue-600";
-      case "IN_PROGRESS":
-        return "text-yellow-600";
-      case "CONTACTED":
-        return "text-purple-600";
-      case "COMPLETED":
-        return "text-green-600";
+      case 'NEW':
+        return 'text-blue-600';
+      case 'IN_PROGRESS':
+        return 'text-yellow-600';
+      case 'CONTACTED':
+        return 'text-purple-600';
+      case 'COMPLETED':
+        return 'text-green-600';
       default:
-        return "text-gray-600";
+        return 'text-gray-600';
     }
   };
 
   const getStatusLabel = (status) => {
     const labels = {
-      NEW: "Nuevo",
-      IN_PROGRESS: "En Progreso",
-      CONTACTED: "Contactado",
-      COMPLETED: "Completado",
+      NEW: 'Nuevo',
+      IN_PROGRESS: 'En Progreso',
+      CONTACTED: 'Contactado',
+      COMPLETED: 'Completado',
     };
     return labels[status] || status;
   };
@@ -283,7 +283,7 @@ function DashboardPage() {
             <Button
               variant="outline"
               className="w-full mt-6"
-              onClick={() => navigate("/contacts")}
+              onClick={() => navigate('/contacts')}
             >
               Ver todos los contactos
               <ArrowUpRight className="h-4 w-4 ml-2" />
@@ -325,7 +325,7 @@ function DashboardPage() {
             <CardContent className="space-y-2">
               <Button
                 className="w-full justify-start"
-                onClick={() => navigate("/contacts/new")}
+                onClick={() => navigate('/contacts/new')}
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Nuevo Contacto
@@ -333,7 +333,7 @@ function DashboardPage() {
               <Button
                 variant="outline"
                 className="w-full justify-start"
-                onClick={() => navigate("/contacts")}
+                onClick={() => navigate('/contacts')}
               >
                 <Users className="h-4 w-4 mr-2" />
                 Ver Contactos

@@ -2,12 +2,6 @@ import User from '../models/user.model.js';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 
-// Validar que JWT_SECRET está configurado
-if (!process.env.JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable is not configured');
-}
-
-const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_ALGORITHM = 'HS256';
 const JWT_EXPIRATION = '1h';
 
@@ -66,6 +60,8 @@ export const register = async ({ email, password, role }) => {
 };
 
 export const login = async ({ email, password }) => {
+  const JWT_SECRET = process.env.JWT_SECRET;
+
   // Seleccionar password explícitamente
   const user = await User.findOne({ email, active: true }).select('+password');
   if (!user) {
@@ -113,6 +109,8 @@ export const login = async ({ email, password }) => {
 };
 
 export const generateNewToken = async (authUser) => {
+  const JWT_SECRET = process.env.JWT_SECRET;
+
   // authUser viene del middleware de autenticación
   // Obtener usuario actualizado de la BD
   const user = await User.findById(authUser.id).lean();

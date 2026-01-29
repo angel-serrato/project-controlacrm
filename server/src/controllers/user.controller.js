@@ -21,13 +21,11 @@ export const getUserById = async (req, res, next) => {
 export const createUser = async (req, res, next) => {
   try {
     const user = await userService.createUser(req.body);
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: 'Usuario creado exitosamente',
-        data: user,
-      });
+    res.status(201).json({
+      success: true,
+      message: 'Usuario creado exitosamente',
+      data: user,
+    });
   } catch (error) {
     next(error);
   }
@@ -36,13 +34,11 @@ export const createUser = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
   try {
     const updatedUser = await userService.updateUser(req.params.id, req.body);
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: 'Usuario actualizado exitosamente',
-        data: updatedUser,
-      });
+    res.status(200).json({
+      success: true,
+      message: 'Usuario actualizado exitosamente',
+      data: updatedUser,
+    });
   } catch (error) {
     next(error);
   }
@@ -51,13 +47,11 @@ export const updateUser = async (req, res, next) => {
 export const deleteUser = async (req, res, next) => {
   try {
     const deletedUser = await userService.deleteUser(req.params.id);
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: 'Usuario eliminado exitosamente',
-        data: deletedUser,
-      });
+    res.status(200).json({
+      success: true,
+      message: 'Usuario eliminado exitosamente',
+      data: deletedUser,
+    });
   } catch (error) {
     next(error);
   }

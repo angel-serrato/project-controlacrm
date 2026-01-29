@@ -1,50 +1,49 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { toast } from "react-hot-toast";
-import api from "../services/api";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { toast } from 'react-hot-toast';
+import api from '../services/api';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
-import { AlertCircle, Loader2 } from "lucide-react";
+} from '../components/ui/card';
+import { AlertCircle, Loader2 } from 'lucide-react';
 
 // Schema de validación con Zod
 const contactSchema = z.object({
   firstName: z
-    .string({ required_error: "El nombre es obligatorio" })
-    .min(2, "El nombre debe tener al menos 2 caracteres"),
+    .string({ required_error: 'El nombre es obligatorio' })
+    .min(2, { message: 'El nombre debe tener al menos 2 caracteres' }),
   lastName: z
-    .string({ required_error: "El apellido es obligatorio" })
-    .min(2, "El apellido debe tener al menos 2 caracteres"),
+    .string({ required_error: 'El apellido es obligatorio' })
+    .min(2, { message: 'El apellido debe tener al menos 2 caracteres' }),
   email: z
-    .string({ required_error: "El email es obligatorio" })
-    .email("Por favor ingresa un email válido"),
+    .string({ required_error: 'El email es obligatorio' })
+    .email({ message: 'Por favor ingresa un email válido' }),
   phone: z
     .string()
     .optional()
-    .refine(
-      (val) => !val || /^\+?[\d\s\-()]+$/.test(val),
-      "El teléfono no es válido",
-    ),
+    .refine((val) => !val || /^\+?[\d\s\-()]+$/.test(val), {
+      message: 'El teléfono no es válido',
+    }),
   notes: z.string().optional(),
   assignedTo: z
-    .string({ required_error: "Debes seleccionar un usuario" })
-    .min(1, "Debes seleccionar un usuario"),
+    .string({ required_error: 'Debes seleccionar un usuario' })
+    .min(1, { message: 'Debes seleccionar un usuario' }),
 });
 
 export default function ContactNewPage() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(true);
-  const [serverError, setServerError] = useState("");
+  const [serverError, setServerError] = useState('');
   const [users, setUsers] = useState([]);
 
   const {
@@ -53,14 +52,14 @@ export default function ContactNewPage() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(contactSchema),
-    mode: "onBlur",
+    mode: 'onBlur',
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      notes: "",
-      assignedTo: "",
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      notes: '',
+      assignedTo: '',
     },
   });
 
@@ -69,13 +68,13 @@ export default function ContactNewPage() {
     const fetchUsers = async () => {
       try {
         setLoadingUsers(true);
-        const { data: response } = await api.get("/users");
+        const { data: response } = await api.get('/users');
         // Filtrar solo usuarios con rol "sales"
-        const salesUsers = response.data.filter((u) => u.role === "sales");
+        const salesUsers = response.data.filter((u) => u.role === 'sales');
         setUsers(salesUsers);
       } catch (error) {
-        console.error("Error cargando usuarios:", error);
-        toast.error("Error al cargar usuarios");
+        console.error('Error cargando usuarios:', error);
+        toast.error('Error al cargar usuarios');
       } finally {
         setLoadingUsers(false);
       }
@@ -86,35 +85,35 @@ export default function ContactNewPage() {
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-    setServerError("");
+    setServerError('');
 
     try {
       // POST a /api/v1/contacts
-      await api.post("/contacts", {
+      await api.post('/contacts', {
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
-        phone: data.phone || "",
-        notes: data.notes || "",
+        phone: data.phone || '',
+        notes: data.notes || '',
         assignedTo: data.assignedTo,
-        status: "NEW", // El backend lo fuerza igual, pero incluimos por claridad
+        status: 'NEW', // El backend lo fuerza igual, pero incluimos por claridad
       });
 
-      toast.success("¡Contacto creado exitosamente!");
+      toast.success('¡Contacto creado exitosamente!');
 
       // Redirigir a lista de contactos después de 1 segundo
       setTimeout(() => {
-        navigate("/contacts");
+        navigate('/contacts');
       }, 1000);
     } catch (error) {
       const errorMsg =
         error.response?.data?.message ||
         error.message ||
-        "Error al crear contacto. Por favor, intenta de nuevo.";
+        'Error al crear contacto. Por favor, intenta de nuevo.';
 
       setServerError(errorMsg);
       toast.error(errorMsg);
-      console.error("Create contact error:", error);
+      console.error('Create contact error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -132,7 +131,7 @@ export default function ContactNewPage() {
             Completa los datos para agregar un nuevo contacto
           </p>
         </div>
-        <Button onClick={() => navigate("/contacts")} variant="outline">
+        <Button onClick={() => navigate('/contacts')} variant="outline">
           Volver
         </Button>
       </div>
@@ -159,7 +158,7 @@ export default function ContactNewPage() {
                   id="firstName"
                   type="text"
                   placeholder="Juan"
-                  {...register("firstName")}
+                  {...register('firstName')}
                 />
                 {errors.firstName && (
                   <p className="text-sm text-destructive">
@@ -175,7 +174,7 @@ export default function ContactNewPage() {
                   id="lastName"
                   type="text"
                   placeholder="Pérez"
-                  {...register("lastName")}
+                  {...register('lastName')}
                 />
                 {errors.lastName && (
                   <p className="text-sm text-destructive">
@@ -192,7 +191,7 @@ export default function ContactNewPage() {
                 id="email"
                 type="email"
                 placeholder="juan@example.com"
-                {...register("email")}
+                {...register('email')}
               />
               {errors.email && (
                 <p className="text-sm text-destructive">
@@ -208,7 +207,7 @@ export default function ContactNewPage() {
                 id="phone"
                 type="text"
                 placeholder="+1 234 567 8900"
-                {...register("phone")}
+                {...register('phone')}
               />
               {errors.phone && (
                 <p className="text-sm text-destructive">
@@ -228,7 +227,7 @@ export default function ContactNewPage() {
               ) : (
                 <select
                   id="assignedTo"
-                  {...register("assignedTo")}
+                  {...register('assignedTo')}
                   className="w-full px-3 py-2 border border-input rounded-md text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <option value="">Selecciona un usuario</option>
@@ -254,7 +253,7 @@ export default function ContactNewPage() {
                 placeholder="Información adicional sobre el contacto..."
                 className="w-full px-3 py-2 border border-input rounded-md text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
                 rows="4"
-                {...register("notes")}
+                {...register('notes')}
               />
               {errors.notes && (
                 <p className="text-sm text-destructive">
@@ -270,12 +269,12 @@ export default function ContactNewPage() {
                 disabled={isLoading || loadingUsers}
                 className="flex-1"
               >
-                {isLoading ? "Creando contacto..." : "Crear Contacto"}
+                {isLoading ? 'Creando contacto...' : 'Crear Contacto'}
               </Button>
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => navigate("/contacts")}
+                onClick={() => navigate('/contacts')}
                 disabled={isLoading}
               >
                 Cancelar

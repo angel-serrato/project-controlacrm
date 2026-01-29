@@ -1,34 +1,34 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { toast } from "react-hot-toast";
-import api from "../services/api";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { toast } from 'react-hot-toast';
+import api from '../services/api';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
-import { AlertCircle, ArrowLeft, CheckCircle2, Mail } from "lucide-react";
+} from '../components/ui/card';
+import { AlertCircle, ArrowLeft, CheckCircle2, Mail } from 'lucide-react';
 
 // Schema de validación con Zod
 const forgotPasswordSchema = z.object({
   email: z
-    .string({ required_error: "Email es requerido" })
-    .email("Por favor ingresa un email válido"),
+    .string({ required_error: 'Email es requerido' })
+    .email({ message: 'Por favor ingresa un email válido' }),
 });
 
 function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
-  const [serverError, setServerError] = useState("");
+  const [serverError, setServerError] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [submittedEmail, setSubmittedEmail] = useState("");
+  const [submittedEmail, setSubmittedEmail] = useState('');
 
   const {
     register,
@@ -36,29 +36,29 @@ function ForgotPasswordPage() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(forgotPasswordSchema),
-    mode: "onBlur",
+    mode: 'onBlur',
   });
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-    setServerError("");
+    setServerError('');
 
     try {
-      await api.post("/auth/forgot-password", {
+      await api.post('/auth/forgot-password', {
         email: data.email,
       });
 
       setSubmittedEmail(data.email);
       setIsSubmitted(true);
-      toast.success("Email enviado. Revisa tu bandeja de entrada.");
+      toast.success('Email enviado. Revisa tu bandeja de entrada.');
     } catch (error) {
       const errorMsg =
         error.response?.data?.message ||
         error.message ||
-        "Error al enviar email. Por favor, intenta de nuevo.";
+        'Error al enviar email. Por favor, intenta de nuevo.';
       setServerError(errorMsg);
       toast.error(errorMsg);
-      console.error("Forgot password error:", error);
+      console.error('Forgot password error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -108,8 +108,8 @@ function ForgotPasswordPage() {
             </CardTitle>
             <CardDescription className="text-xs sm:text-sm">
               {isSubmitted
-                ? "Revisa tu email para las instrucciones"
-                : "Ingresa tu email para recibir instrucciones"}
+                ? 'Revisa tu email para las instrucciones'
+                : 'Ingresa tu email para recibir instrucciones'}
             </CardDescription>
           </CardHeader>
 
@@ -125,7 +125,7 @@ function ForgotPasswordPage() {
                       Email enviado exitosamente
                     </p>
                     <p className="text-xs sm:text-sm text-green-700 dark:text-green-400/80">
-                      Hemos enviado las instrucciones de recuperación a{" "}
+                      Hemos enviado las instrucciones de recuperación a{' '}
                       <span className="font-semibold">{submittedEmail}</span>
                     </p>
                   </div>
@@ -173,11 +173,11 @@ function ForgotPasswordPage() {
                 {/* Back to Login */}
                 <div className="space-y-2 sm:space-y-3">
                   <p className="text-xs sm:text-sm text-muted-foreground text-center">
-                    ¿No recibiste el email?{" "}
+                    ¿No recibiste el email?{' '}
                     <button
                       onClick={() => {
                         setIsSubmitted(false);
-                        setServerError("");
+                        setServerError('');
                       }}
                       className="font-semibold text-primary hover:underline"
                     >
@@ -223,7 +223,7 @@ function ForgotPasswordPage() {
                       type="email"
                       placeholder="tu@email.com"
                       className="text-xs sm:text-sm h-9 sm:h-10"
-                      {...register("email")}
+                      {...register('email')}
                     />
                     {errors.email && (
                       <p className="text-xs sm:text-sm text-destructive">
@@ -238,7 +238,7 @@ function ForgotPasswordPage() {
                     disabled={isLoading}
                     className="w-full text-sm h-9 sm:h-10"
                   >
-                    {isLoading ? "Enviando..." : "Enviar Instrucciones"}
+                    {isLoading ? 'Enviando...' : 'Enviar Instrucciones'}
                   </Button>
                 </form>
 
@@ -274,7 +274,7 @@ function ForgotPasswordPage() {
                 {/* Back to Login */}
                 <div className="text-center space-y-1.5 sm:space-y-2">
                   <p className="text-xs sm:text-sm text-muted-foreground">
-                    ¿Recordaste tu contraseña?{" "}
+                    ¿Recordaste tu contraseña?{' '}
                     <Link
                       to="/login"
                       className="font-semibold text-primary hover:underline"
@@ -283,7 +283,7 @@ function ForgotPasswordPage() {
                     </Link>
                   </p>
                   <p className="text-xs sm:text-sm text-muted-foreground">
-                    ¿No tienes cuenta?{" "}
+                    ¿No tienes cuenta?{' '}
                     <Link
                       to="/register"
                       className="font-semibold text-primary hover:underline"

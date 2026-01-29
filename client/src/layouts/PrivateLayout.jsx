@@ -1,10 +1,10 @@
-import { Outlet, useNavigate, Link, useLocation } from "react-router-dom";
-import { useAuthStore } from "../store/authStore";
-import { Button } from "../components/ui/button";
-import { LayoutDashboard, Users, LogOut, Menu } from "lucide-react";
-import { useState } from "react";
+import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
+import { Button } from '../components/ui/button';
+import { LayoutDashboard, Users, LogOut, Menu, SquareUser } from 'lucide-react';
+import { useState } from 'react';
 
-function PrivateLayout() {
+export default function PrivateLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = useAuthStore((state) => state.user);
@@ -13,33 +13,36 @@ function PrivateLayout() {
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate('/login');
   };
 
   const isActive = (path) => location.pathname === path;
 
   const navItems = [
     {
-      label: "Dashboard",
-      path: "/dashboard",
+      label: 'Dashboard',
+      path: '/dashboard',
       icon: LayoutDashboard,
     },
     {
-      label: "Contactos",
-      path: "/contacts",
+      label: 'Contactos',
+      path: '/contacts',
       icon: Users,
+    },
+    {
+      label: 'Profile',
+      path: '/profile',
+      icon: SquareUser,
     },
   ];
 
   return (
     <div className="flex h-screen bg-background">
-      {/* Sidebar */}
       <aside
         className={`${
-          sidebarOpen ? "w-64" : "w-20"
+          sidebarOpen ? 'w-64' : 'w-20'
         } border-r border-border bg-background transition-all duration-300 flex flex-col`}
       >
-        {/* Logo Section */}
         <div className="flex items-center justify-between p-6 border-b border-border">
           {sidebarOpen && (
             <h2 className="text-xl font-bold tracking-tight">ControlaCRM</h2>
@@ -54,7 +57,6 @@ function PrivateLayout() {
           </Button>
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 px-3 py-6 space-y-2">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -65,18 +67,17 @@ function PrivateLayout() {
                 to={item.path}
                 className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
                   active
-                    ? "bg-primary/10 text-primary font-medium"
-                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                    ? 'bg-primary/10 text-primary font-medium'
+                    : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                 }`}
               >
-                <Icon className="h-5 w-5 flex-shrink-0" />
+                <Icon className="h-5 w-5 shrink-0" />
                 {sidebarOpen && <span>{item.label}</span>}
               </Link>
             );
           })}
         </nav>
 
-        {/* User Section */}
         <div className="border-t border-border p-4 space-y-4">
           {sidebarOpen && (
             <div className="space-y-1">
@@ -90,7 +91,7 @@ function PrivateLayout() {
             onClick={handleLogout}
             variant="outline"
             className="w-full justify-start gap-2"
-            size={sidebarOpen ? "default" : "icon"}
+            size={sidebarOpen ? 'default' : 'icon'}
           >
             <LogOut className="h-4 w-4" />
             {sidebarOpen && <span>Salir</span>}
@@ -98,9 +99,7 @@ function PrivateLayout() {
         </div>
       </aside>
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        {/* Header */}
         <header className="border-b border-border bg-background">
           <div className="max-w-7xl mx-auto px-6 py-4">
             <p className="text-sm text-muted-foreground">
@@ -109,7 +108,6 @@ function PrivateLayout() {
           </div>
         </header>
 
-        {/* Page Content */}
         <main className="flex-1 overflow-auto">
           <div className="max-w-7xl mx-auto px-6 py-8">
             <Outlet />
@@ -119,5 +117,3 @@ function PrivateLayout() {
     </div>
   );
 }
-
-export default PrivateLayout;

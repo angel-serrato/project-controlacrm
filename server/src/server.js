@@ -1,6 +1,16 @@
+// IMPORTANT: Load environment variables FIRST before importing other modules
+// that might depend on env variables (like auth.middleware.js)
+import dotenv from 'dotenv';
+const envResult = dotenv.config({ path: ['.env.local', '.env'] });
+
+if (envResult.error && envResult.error.code !== 'ENOENT') {
+  console.error('Error loading .env file:', envResult.error);
+  process.exit(1);
+}
+
+// Now import remaining modules after env is loaded
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import helmet from 'helmet';
 import connectDB from './config/db.config.js';
 import userRoutes from './routes/user.routes.js';
@@ -9,9 +19,6 @@ import contactRoutes from './routes/contact.routes.js';
 import { errorHandler } from './middlewares/errorHandler.middleware.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.config.js';
-
-// Cargar variables de entorno (.env.local sobrescribe .env)
-const envResult = dotenv.config({ path: ['.env.local', '.env'] });
 
 if (envResult.error && envResult.error.code !== 'ENOENT') {
   console.error('Error loading .env file:', envResult.error);

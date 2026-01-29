@@ -1,11 +1,11 @@
-import axios from "axios";
+import axios from 'axios';
 import type {
   AxiosInstance,
   AxiosError,
   AxiosResponse,
   InternalAxiosRequestConfig,
-} from "axios";
-import { useAuthStore } from "../store/authStore";
+} from 'axios';
+import { useAuthStore } from '../store/authStore';
 
 // Configuración de reintentos
 const MAX_RETRIES = 3;
@@ -20,7 +20,7 @@ let failedQueue: Array<{
 
 const processQueue = (
   error: AxiosError | null,
-  token: string | null = null,
+  token: string | null = null
 ) => {
   failedQueue.forEach((prom) => {
     if (error) {
@@ -37,9 +37,9 @@ const refreshToken = async (): Promise<string> => {
   try {
     // Usar la instancia api con skipRefresh para evitar loop infinito
     const response = await api.post(
-      "/auth/refresh",
+      '/auth/refresh',
       {},
-      { skipRefresh: true, timeout: 5000 },
+      { skipRefresh: true, timeout: 5000 }
     );
 
     // Validar que la respuesta es exitosa y tiene los datos esperados
@@ -48,7 +48,7 @@ const refreshToken = async (): Promise<string> => {
       !response.data?.data?.token ||
       !response.data?.data?.user
     ) {
-      const errorMsg = response.data?.message || "Error al refrescar el token";
+      const errorMsg = response.data?.message || 'Error al refrescar el token';
       throw new Error(errorMsg);
     }
 
@@ -66,10 +66,10 @@ const refreshToken = async (): Promise<string> => {
 
 // Crear instancia de Axios con baseURL desde variable de entorno
 const api: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1",
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1',
   timeout: 10000,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
   validateStatus: (status) => {
     // Resolver promesa para status 2xx y 4xx, rechazar solo para 5xx
@@ -91,7 +91,7 @@ api.interceptors.request.use(
   },
   (error: AxiosError) => {
     return Promise.reject(error);
-  },
+  }
 );
 
 // Interceptor de RESPONSE: Manejar errores (401, red, timeout, etc) con reintentos
@@ -117,9 +117,9 @@ api.interceptors.response.use(
       // Manejar 401 (token inválido o expirado) - Intentar refrescar
       if (status === 401 && !config.skipRefresh) {
         // Solo intentar refresh en rutas privadas
-        const publicRoutes = ["/login", "/register", "/"];
+        const publicRoutes = ['/login', '/register', '/'];
         const isPublicRoute =
-          typeof window !== "undefined"
+          typeof window !== 'undefined'
             ? publicRoutes.includes(window.location.pathname)
             : false;
 
@@ -137,7 +137,7 @@ api.interceptors.response.use(
             } catch (err) {
               // Si falla el refresh, hacer logout
               processQueue(err as AxiosError);
-              window.location.href = "/login";
+              window.location.href = '/login';
               return Promise.reject(err);
             } finally {
               isRefreshing = false;
@@ -163,8 +163,8 @@ api.interceptors.response.use(
       }
 
       // Reintentar solo en errores 5xx para métodos idempotentes
-      const idempotentMethods = ["GET", "HEAD", "OPTIONS", "PUT"];
-      const method = (config.method || "GET").toUpperCase();
+      const idempotentMethods = ['GET', 'HEAD', 'OPTIONS', 'PUT'];
+      const method = (config.method || 'GET').toUpperCase();
 
       if (
         status >= 500 &&
@@ -199,7 +199,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  },
+  }
 );
 
 export default api;
